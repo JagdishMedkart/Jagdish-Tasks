@@ -1,3 +1,6 @@
 [submodule "Quiz-Application"]
 	path = Quiz-Application
 	url = https://github.com/JagdishMedkart/Quiz-Application.git
+[submodule "JSON-parser"]
+	path = JSON-parser
+	url = https://github.com/JagdishMedkart/JSON-parser.git
