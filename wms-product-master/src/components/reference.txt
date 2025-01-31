@@ -1,0 +1,240 @@
+Thanks for the detailed project requirements. Based on your description and the attached document, here's a comprehensive breakdown of the project's directory structure, overview of tools and technologies, and examples of key files:
+
+Directory Structure
+plaintext
+Copy
+Edit
+project/
+├── public/
+│   ├── assets/
+│   ├── scss/             # Global SCSS variables, mixins, etc.
+│   └── ...               # Public static files
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   ├── forms/        # Dynamic form components
+│   │   ├── modals/       # Modal components
+│   │   ├── tables/       # Table and list components
+│   │   └── ...           # Other components
+│   ├── features/         # Redux feature slices with sagas
+│   │   ├── auth/         # Auth state and sagas
+│   │   ├── products/     # Product state and sagas
+│   │   └── dashboard/    # Dashboard-related state and sagas
+│   ├── layouts/          # Page layouts (e.g., AuthLayout, DashboardLayout)
+│   ├── pages/            # Next.js pages (each file becomes a route)
+│   │   ├── api/          # API routes (for mocking purposes)
+│   │   ├── index.js      # Home page
+│   │   ├── login.js      # Login page
+│   │   ├── dashboard/    # Dashboard pages
+│   │   │   └── index.js
+│   │   └── products/     # Product pages
+│   │       ├── index.js
+│   │       ├── add.js
+│   │       └── [id].js   # Dynamic product editing
+│   ├── styles/           # Component and global SCSS styles
+│   ├── utils/            # Helper functions (e.g., API service, utilities)
+│   ├── middleware/       # Axios interceptors
+│   ├── store/            # Redux store configuration
+│   └── ...               # Other directories (e.g., hooks, constants)
+├── .env.local            # Environment variables
+├── next.config.js        # Next.js configuration
+├── package.json          # Project dependencies
+└── ...                   # Other configuration files
+Technologies & Their Roles
+Next.js
+
+Framework for the app with routing and SSR/CSR support.
+Pages directory defines routes like /login, /dashboard.
+Redux
+
+Centralized state management.
+Stores data like user session, products, permissions.
+Redux-Saga
+
+Middleware to handle side effects (e.g., API calls).
+Used for actions like fetching product data or login.
+SCSS
+
+CSS preprocessor for styling.
+Organized by global styles, component-specific styles.
+Axios (with interceptors)
+
+Handles API requests.
+Adds headers like Location or authentication tokens.
+Key Files Overview
+1. Axios Interceptor
+src/middleware/axios.js
+
+javascript
+Copy
+Edit
+import axios from "axios";
+
+const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 5000,
+});
+
+// Request Interceptor
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  config.headers.Authorization = token ? `Bearer ${token}` : "";
+  config.headers["Location"] = localStorage.getItem("location") || "default";
+  return config;
+});
+
+// Response Interceptor
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      // Redirect to login on 401
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;
+2. Redux Store
+src/store/index.js
+
+javascript
+Copy
+Edit
+import { configureStore } from "@reduxjs/toolkit";
+import createSagaMiddleware from "redux-saga";
+import rootReducer from "./rootReducer";
+import rootSaga from "./rootSaga";
+
+const sagaMiddleware = createSagaMiddleware();
+
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
+});
+
+sagaMiddleware.run(rootSaga);
+
+export default store;
+src/store/rootReducer.js
+
+javascript
+Copy
+Edit
+import { combineReducers } from "redux";
+import authReducer from "../features/auth/authSlice";
+import productReducer from "../features/products/productSlice";
+
+export default combineReducers({
+  auth: authReducer,
+  products: productReducer,
+});
+src/store/rootSaga.js
+
+javascript
+Copy
+Edit
+import { all } from "redux-saga/effects";
+import authSaga from "../features/auth/authSaga";
+import productSaga from "../features/products/productSaga";
+
+export default function* rootSaga() {
+  yield all([authSaga(), productSaga()]);
+}
+3. Dynamic Form Component
+src/components/forms/DynamicForm.js
+
+javascript
+Copy
+Edit
+import React from "react";
+
+const DynamicForm = ({ formData }) => {
+  return (
+    <form>
+      {formData.tabs.map((tab, index) => (
+        <div key={index} className="tab">
+          <h3>{tab.title}</h3>
+          {tab.fields.map((field) => (
+            <div key={field.name} className="form-group">
+              {field.type === "text" && (
+                <input
+                  type="text"
+                  name={field.name}
+                  placeholder={field.placeholder}
+                />
+              )}
+              {field.type === "select" && (
+                <select name={field.name}>
+                  {field.options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default DynamicForm;
+4. Example Saga
+src/features/products/productSaga.js
+
+javascript
+Copy
+Edit
+import { call, put, takeLatest } from "redux-saga/effects";
+import apiClient from "../../middleware/axios";
+import { fetchProductsSuccess, fetchProductsFailure } from "./productSlice";
+
+function* fetchProducts(action) {
+  try {
+    const response = yield call(apiClient.get, "/api/v1/master/products");
+    yield put(fetchProductsSuccess(response.data));
+  } catch (error) {
+    yield put(fetchProductsFailure(error.message));
+  }
+}
+
+export default function* productSaga() {
+  yield takeLatest("products/fetchProducts", fetchProducts);
+}
+5. Dynamic Page Example
+src/pages/products/[id].js
+
+javascript
+Copy
+Edit
+import { useRouter } from "next/router";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchProductById } from "../../features/products/productSlice";
+import DynamicForm from "../../components/forms/DynamicForm";
+
+const EditProduct = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const dispatch = useDispatch();
+
+  const product = useSelector((state) => state.products.selectedProduct);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchProductById(id));
+    }
+  }, [id]);
+
+  if (!product) return <p>Loading...</p>;
+
+  return <DynamicForm formData={product.formData} />;
+};
+
+export default EditProduct;
+This structure and code organization ensures the application is modular, scalable, and dynamic while meeting your requirements for fully dynamic components, forms, and API integrations. Let me know if you want more detailed explanations or examples!
