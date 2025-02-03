@@ -1,0 +1,81 @@
+$bg-dark: rgb(85, 86, 166); 
+$border-dark: rgb(85, 86, 166);
+$hover-bg: #4b5563;
+$text-light: #ffffff; 
+$button-bg: #ffffff; 
+$button-text: #000000;
+$transition-speed: 0.3s;
+
+.navbar {
+  background-color: $bg-dark;
+  border-bottom: 1px solid $border-dark;
+  padding: 1rem 0;
+
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .rightDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $text-light;
+    text-decoration: none;
+  }
+
+  .navLinks {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    a {
+      color: $text-light;
+      text-decoration: none;
+      transition: color $transition-speed;
+
+      &:hover {
+        color: #d1d5db;
+      }
+    }
+  }
+
+  .loginBtn {
+    background-color: $button-bg;
+    color: $button-text;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    transition: background-color $transition-speed;
+
+    &:hover {
+      background-color: #e2e8f0;
+    }
+  }
+
+  .innerDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+  }
+
+}
+.li {
+    text-decoration: none;
+    list-style-type: none;
+    margin: 1rem;
+}
