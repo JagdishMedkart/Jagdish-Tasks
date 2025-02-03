@@ -7,8 +7,9 @@ const apiClient = axios.create({
 
 // Request Interceptor
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  config.headers.Authorization = token ? `Bearer ${token}` : "";
+  // const token = localStorage.getItem("token");
+  // console.log("token dashboard = ", token);
+  // config.headers.Authorization = token ? `Bearer ${token}` : "";
   config.headers.Macaddress = "1CC10CAD27C6";
   return config;
 });

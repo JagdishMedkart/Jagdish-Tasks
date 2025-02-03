@@ -8,6 +8,7 @@ const initialState = {
     isLoading: false,
     isAuthenticated: false,
     name: "",
+    token: "",
 };
 
 export const authSliceReducer = createSlice({
@@ -40,6 +41,9 @@ export const authSliceReducer = createSlice({
         },
         setName: (state, action) => {
             state.name = action.payload;
+        },
+        setToken: (state, action) => {
+            state.token = action.payload;
         }
     },
 });
@@ -52,6 +56,7 @@ export const
         loginRequest,
         loginSuccess,
         loginFailure,
-        setName
+        setName,
+        setToken
     } = authSliceReducer.actions;
 export const authReducer = authSliceReducer.reducer;

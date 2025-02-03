@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../styles/Auth.module.scss";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,15 +8,18 @@ import { useRouter } from "next/navigation";
 
 export const Auth = () => {
     const dispatch = useDispatch();
-    const { email, password, showPassword, isLoading, error } = useSelector((state) => state.auth);
+    const { email, password, showPassword, isLoading, error, token } = useSelector((state) => state.auth);
     const router = useRouter();
 
     const handleSubmit = (e) => {
         dispatch(loginRequest({ email, password }));
-        if(error == "") {
+    };
+
+    useEffect(() => {
+        if(token !== "") {
             router.push("/dashboard");
         }
-    };
+    }, [token]);
 
     return (
         <>
