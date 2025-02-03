@@ -102,3 +102,18 @@
     right: 40.5%;
     width: 22px;
 }
+
+.errorText {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 0px;
+    text-align: left;
+    width: 100%;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}

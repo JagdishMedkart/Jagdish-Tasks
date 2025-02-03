@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
-    tabs: [],
+    modules: "",
     isLoading: true,
 };
 
@@ -10,14 +9,23 @@ export const dashboardSliceReducer = createSlice({
     name: "dashboard",
     initialState,
     reducers: {
-        setTabs: (state, action) => {
-            state.isLoading = true;
+        fetchModules: (state, action) => {
+            state.isLoading = true; // Indicate loading
+        },
+        setModules: (state, action) => {
+            state.modules = [...action.payload];
+            state.isLoading = false;
+        },
+        setModulesError: (state) => {
+            state.isLoading = false;
         }
     },
 });
 
 export const
     { 
-        setTabs
+        fetchModules,
+        setModules,
+        setModulesError
     } = dashboardSliceReducer.actions;
 export const dashboardReducer = dashboardSliceReducer.reducer;
