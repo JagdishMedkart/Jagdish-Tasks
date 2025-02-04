@@ -18,6 +18,11 @@ const initialState = {
         {actual: "manufacturer", show: "Manufacturer", active: false},
     ],
     search_key: "",
+    filters: [
+        {actual: "is_assured", show: "isAssured", values: ["Yes", "No"], active: "false"},
+        {actual: "is_refrigerated", show: "isRefrigerated", values: ["Yes", "No"], active: "false"},
+        {actual: "publish_status", show: "Status", values: ["Published", "Unpublished", "Draft"], active: "false"},
+    ]
 };
 
 export const productSliceReducer = createSlice({
@@ -35,6 +40,7 @@ export const productSliceReducer = createSlice({
                         search_by: action.payload.payload.search_by,
                         search_key: action.payload.payload.search_key,
                         asc: action.payload.payload.asc,
+                        filters: action.payload.payload.filters,
                         isLoading: true,
                     };
                 default:
@@ -60,6 +66,9 @@ export const productSliceReducer = createSlice({
         },
         setSearchBy: (state, action) => {
             return { ...state, search_by: action.payload};
+        },
+        setFilters: (state, action) => {
+            return { ...state, filters: action.payload};
         }
     },
 });
@@ -72,6 +81,7 @@ export const
         setAsc,
         setSortBy,
         setSearchKey,
-        setSearchBy
+        setSearchBy,
+        setFilters
     } = productSliceReducer.actions;
 export const productReducer = productSliceReducer.reducer;

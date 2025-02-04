@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "../../styles/ProductListing.module.scss";
-import { fetchProducts, setAsc, setSortBy, setSearchBy, setSearchKey } from "@/features/products/productSlice";
+import { fetchProducts, setAsc, setSortBy, setSearchBy, setSearchKey, setFilters } from "@/features/products/productSlice";
+import Filter from "./Filter";
 
 const ProductListing = () => {
-    const { products, isLoading, meta, sort_by, asc, search_by, search_key } = useSelector((state) => state.products);
+    const { products, isLoading, meta, sort_by, asc, search_by, search_key, filters } = useSelector((state) => state.products);
     const token = useSelector((state) => state.auth.token);
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
@@ -15,15 +16,24 @@ const ProductListing = () => {
 
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
+    const [openFilter, setOpenFilter] = useState(null);
+
+    const handleFilterToggle = (item) => {
+        setOpenFilter(openFilter === item ? null : item);
+        setOpenSearch(null);
+        setOpenModule(null);
+    }
 
     const handleModuleToggle = (moduleName) => {
         setOpenModule(openModule === moduleName ? null : moduleName);
         setOpenSearch(null);
+        setOpenFilter(null);
     };
 
     const handleSearchToggle = (item) => {
         setOpenSearch(openSearch === item ? null : item);
         setOpenModule(null);
+        setOpenFilter(null);
     }
 
     const handleAsc = (item) => {
@@ -65,8 +75,8 @@ const ProductListing = () => {
         console.log("page = ", currentPage);
         console.log("sort_by = ", sort_by);
         console.log("asc = ", asc);
-        dispatch(fetchProducts({ type: "pageChange", payload: { page: currentPage, token: token, sort_by: sort_by, asc: asc, search_by: search_by, search_key: search_key } }));
-    }, [dispatch, currentPage, sort_by, asc, search_by, search_key]);
+        dispatch(fetchProducts({ type: "pageChange", payload: { page: currentPage, token: token, sort_by: sort_by, asc: asc, search_by: search_by, search_key: search_key, filters: filters } }));
+    }, [dispatch, currentPage, sort_by, asc, search_by, search_key, filters]);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= meta.last_page) {
@@ -102,7 +112,10 @@ const ProductListing = () => {
                                         value={search_key}
                                         placeholder="Search by..."
                                         onChange={(e) => {
-                                            dispatch(setSearchKey(e.target.value));
+                                            if (e.target.value.includes(" ")) {
+                                                e.target.value = e.target.value.replace(/\s/g, "")
+                                            }
+                                            dispatch(setSearchKey(e.target.value.trim()));
                                         }}
                                     />
                                 </div>
@@ -113,6 +126,19 @@ const ProductListing = () => {
                             >
                                 <span className={styles.span}>Search By</span>
                             </div>
+                        </div>
+                        <div
+                            className={`${styles.moduleHeader}`}
+                            onClick={() => handleFilterToggle("filter")}
+                        >
+                            <Image
+                                src={"/filter.png"}
+                                alt={"filter"}
+                                width={20}
+                                height={20}
+                                style={{ objectFit: 'contain' }}
+                            />
+                            <span className={styles.span}>Filter</span>
                         </div>
                         <div
                             className={`${styles.moduleHeader} ${openModule === "sort" ? styles.active : ''}`}
@@ -169,6 +195,11 @@ const ProductListing = () => {
                     </div>
                 </div>
             </nav>
+            {
+                openFilter === "filter" && (
+                    <Filter />
+                )
+            }
             {!isLoading && (
                 <table>
                     <thead>

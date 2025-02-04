@@ -12,12 +12,14 @@ function* getProducts(action) {
         let search = "";
         let searchkey = "";
         let searchby = "product_code";
+        let filter = "";
         console.log("action type = ", action.payload.type);
         if(action.payload.type === "pageChange") {
             current_page = action.payload.payload.page;
             token = action.payload.payload.token;
             asc = action.payload.payload.asc;
             searchkey = action.payload.payload.search_key;
+            let filters = action.payload.payload.filters;
             if(asc === true) {
                 asc = "a";
             }
@@ -37,27 +39,33 @@ function* getProducts(action) {
             console.log("sortby = ", sortby);
             console.log("search by = ", searchby);
             search = searchkey?.length > 0 ? `search=${searchkey},${searchby}&` : "";
+            filters.map((item, key) => {
+                if(item.active != "false") {
+                    filter += item.actual + "=" + item.active + "&";
+                }
+            })
+            console.log("filter = ", filter);
         }
-        else if(action.payload.type === "sortBy") {
-            token = action.payload.payload.token;
-            sortby = action.payload.payload.sort_by.filter((item) => item.active === true);
-            console.log("sorting by = ", sortby);
-            console.log("sort by = ", sortby);
-            sortby = sortby[0].actual;
-            console.log("sortby = ", sortby);
-        }
-        else if (action.payload.type === "sortType") {
-            token = action.payload.payload.token;
-            asc = action.payload.payload.asc;
-            console.log("asc = ", asc);
-            if(asc === true) {
-                asc = "a";
-            }
-            else {
-                asc = "d";
-            }
-        }
-        const response = yield call(apiClient.get, `/api/v1/master/products/unpublished?${search}sort_by=${sortby},${asc}&page=${current_page}`, {
+        // else if(action.payload.type === "sortBy") {
+        //     token = action.payload.payload.token;
+        //     sortby = action.payload.payload.sort_by.filter((item) => item.active === true);
+        //     console.log("sorting by = ", sortby);
+        //     console.log("sort by = ", sortby);
+        //     sortby = sortby[0].actual;
+        //     console.log("sortby = ", sortby);
+        // }
+        // else if (action.payload.type === "sortType") {
+        //     token = action.payload.payload.token;
+        //     asc = action.payload.payload.asc;
+        //     console.log("asc = ", asc);
+        //     if(asc === true) {
+        //         asc = "a";
+        //     }
+        //     else {
+        //         asc = "d";
+        //     }
+        // }
+        const response = yield call(apiClient.get, `/api/v1/master/products/unpublished?${search}${filter}sort_by=${sortby},${asc}&page=${current_page}`, {
             headers: {
                 Authorization: token
             }
