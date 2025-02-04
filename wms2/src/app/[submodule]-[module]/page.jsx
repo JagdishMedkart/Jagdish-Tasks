@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListing from "@/components/product-master/ProductListing";
 import Navbar from "@/components/Navbar";
+import styles from "../page.module.css";
 
 const submodulePage = () => {
     let params = useParams();
@@ -19,22 +20,20 @@ const submodulePage = () => {
     let [submodule, module] = params;
 
     useEffect(() => {
-        if(token && (module === "master" && submodule === "products")) {
+        if (token && module === "master" && submodule === "products") {
             dispatch(fetchProducts(token));
             setCurrentModule("ProductListing");
         }
     }, [token, dispatch]);
 
     return (
-        <div>
+        <div className={styles.mainDiv}>
             <Navbar />
-            {
-                currentModule === "ProductListing" ? (
-                    <ProductListing />
-                ) : (
-                    <h1>Anything</h1>
-                )
-            }
+            {currentModule === "ProductListing" ? (
+                <ProductListing />
+            ) : (
+                <h1>Anything</h1>
+            )}
         </div>
     );
 };
