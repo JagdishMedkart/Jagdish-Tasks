@@ -4,11 +4,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "../../styles/ProductListing.module.scss";
-import { fetchProducts, setAsc, setSortBy, setSearchBy, setSearchKey, setFilters } from "@/features/products/productSlice";
+import {
+    fetchProducts,
+    setAsc,
+    setSortBy,
+    setSearchBy,
+    setSearchKey,
+    setFilters,
+} from "@/features/products/productSlice";
 import Filter from "./Filter";
 
 const ProductListing = () => {
-    const { products, isLoading, meta, sort_by, asc, search_by, search_key, filters } = useSelector((state) => state.products);
+    const {
+        products,
+        isLoading,
+        meta,
+        sort_by,
+        asc,
+        search_by,
+        search_key,
+        filters,
+    } = useSelector((state) => state.products);
     const token = useSelector((state) => state.auth.token);
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
@@ -22,7 +38,7 @@ const ProductListing = () => {
         setOpenFilter(openFilter === item ? null : item);
         setOpenSearch(null);
         setOpenModule(null);
-    }
+    };
 
     const handleModuleToggle = (moduleName) => {
         setOpenModule(openModule === moduleName ? null : moduleName);
@@ -34,14 +50,14 @@ const ProductListing = () => {
         setOpenSearch(openSearch === item ? null : item);
         setOpenModule(null);
         setOpenFilter(null);
-    }
+    };
 
     const handleAsc = (item) => {
         console.log("within handleAsc");
         console.log(sort_by, asc);
         dispatch(setAsc(!item));
         setCurrentPage(1);
-    }
+    };
 
     const searchBy = (ind) => {
         let tmpSearchBy = search_by;
@@ -49,12 +65,12 @@ const ProductListing = () => {
         tmpSearchBy = search_by.map((item, key) => ({
             ...item,
             active: key === ind,
-        }))
+        }));
         console.log("Updated tmpSearchBy:", tmpSearchBy);
         dispatch(setSearchBy(tmpSearchBy));
         // setCurrentPage(1);
         setOpenSearch(null);
-    }
+    };
 
     const sortBy = (ind) => {
         let tmpSortBy = sort_by;
@@ -68,14 +84,27 @@ const ProductListing = () => {
         dispatch(setSortBy(tmpSortBy));
         setCurrentPage(1);
         setOpenModule(null);
-    }
+    };
 
     useEffect(() => {
         console.log("within useEffect = ", sort_by);
         console.log("page = ", currentPage);
         console.log("sort_by = ", sort_by);
         console.log("asc = ", asc);
-        dispatch(fetchProducts({ type: "pageChange", payload: { page: currentPage, token: token, sort_by: sort_by, asc: asc, search_by: search_by, search_key: search_key, filters: filters } }));
+        dispatch(
+            fetchProducts({
+                type: "pageChange",
+                payload: {
+                    page: currentPage,
+                    token: token,
+                    sort_by: sort_by,
+                    asc: asc,
+                    search_by: search_by,
+                    search_key: search_key,
+                    filters: filters,
+                },
+            })
+        );
     }, [dispatch, currentPage, sort_by, asc, search_by, search_key, filters]);
 
     const handlePageChange = (newPage) => {
@@ -113,9 +142,17 @@ const ProductListing = () => {
                                         placeholder="Search by..."
                                         onChange={(e) => {
                                             if (e.target.value.includes(" ")) {
-                                                e.target.value = e.target.value.replace(/\s/g, "")
+                                                e.target.value =
+                                                    e.target.value.replace(
+                                                        /\s/g,
+                                                        ""
+                                                    );
                                             }
-                                            dispatch(setSearchKey(e.target.value.trim()));
+                                            dispatch(
+                                                setSearchKey(
+                                                    e.target.value.trim()
+                                                )
+                                            );
                                         }}
                                     />
                                 </div>
@@ -136,12 +173,14 @@ const ProductListing = () => {
                                 alt={"filter"}
                                 width={20}
                                 height={20}
-                                style={{ objectFit: 'contain' }}
+                                style={{ objectFit: "contain" }}
                             />
                             <span className={styles.span}>Filter</span>
                         </div>
                         <div
-                            className={`${styles.moduleHeader} ${openModule === "sort" ? styles.active : ''}`}
+                            className={`${styles.moduleHeader} ${
+                                openModule === "sort" ? styles.active : ""
+                            }`}
                             onClick={() => handleModuleToggle("sort")}
                         >
                             <Image
@@ -149,7 +188,7 @@ const ProductListing = () => {
                                 alt={"sort"}
                                 width={20}
                                 height={20}
-                                style={{ objectFit: 'contain' }}
+                                style={{ objectFit: "contain" }}
                             />
                             <span className={styles.span}>Sort By</span>
                         </div>
@@ -162,17 +201,21 @@ const ProductListing = () => {
                                 alt={"sort"}
                                 width={15}
                                 height={15}
-                                style={{ objectFit: 'contain' }}
+                                style={{ objectFit: "contain" }}
                             />
-                            <span className={styles.span}>{asc ? "Ascending" : "Descending"}</span>
+                            <span className={styles.span}>
+                                {asc ? "Ascending" : "Descending"}
+                            </span>
                         </div>
                         {openModule === "sort" && (
                             <div className={styles.dropdown}>
                                 {sort_by?.map((item, ind) => (
                                     <button
                                         key={ind}
-                                        className={styles.dropdownItem}
-                                        onClick={() => { sortBy(ind) }}
+                                        className={`${styles.dropdownItem} ${item.active ? styles.selected : ""}`}
+                                        onClick={() => {
+                                            sortBy(ind);
+                                        }}
                                     >
                                         {item.show}
                                     </button>
@@ -184,8 +227,10 @@ const ProductListing = () => {
                                 {search_by?.map((item, ind) => (
                                     <button
                                         key={ind}
-                                        className={styles.dropdownItem}
-                                        onClick={() => { searchBy(ind) }}
+                                        className={`${styles.dropdownItem} ${item.active ? styles.selected : ""}`}
+                                        onClick={() => {
+                                            searchBy(ind);
+                                        }}
                                     >
                                         {item.show}
                                     </button>
@@ -195,51 +240,66 @@ const ProductListing = () => {
                     </div>
                 </div>
             </nav>
-            {
-                openFilter === "filter" && (
-                    <Filter />
-                )
-            }
+            {openFilter === "filter" && <Filter />}
             {!isLoading && (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Product Code</th>
-                            <th>Wondersoft Code</th>
-                            <th>Product Name</th>
-                            <th>Manufacturer</th>
-                            <th>Combination</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            products.map((product) => (
+                <div className={styles.tableDiv}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th className={styles.th}>Product Code</th>
+                                <th className={styles.th}>Wondersoft Code</th>
+                                <th className={styles.th}>Product Name</th>
+                                <th className={styles.th}>Manufacturer</th>
+                                <th className={styles.th}>Combination</th>
+                                <th className={styles.th}>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.map((product) => (
                                 <tr key={product?.product_id}>
-                                    <td>{product?.product_code}</td>
-                                    <td>{product?.ws_code}</td>
-                                    <td>{product?.product_name}</td>
-                                    <td>{product?.manufacturer}</td>
-                                    <td>{product?.combination}</td>
-                                    <td>{product?.publish_status}</td>
+                                    <td className={styles.td}>
+                                        {product?.product_code}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product?.ws_code}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product?.product_name}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product?.manufacturer}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product?.combination}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product?.publish_status}
+                                    </td>
                                 </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            )
-            }
-            <div
-            // className={styles.pagination}
-            >
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    Previous
-                </button>
-                <span>Page {currentPage} of {meta.last_page}</span>
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === meta.last_page}>
-                    Next
-                </button>
-            </div>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className={styles.pagination}>
+                        <button
+                            className={styles.btn}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </button>
+                        <span>
+                            Page {currentPage} of {meta.last_page}
+                        </span>
+                        <button
+                            className={styles.btn}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === meta.last_page}
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,3 +1,10 @@
+$primary-color: rgb(85, 86, 166);
+$hover-color: rgba(85, 86, 166, 0.2);
+$border-color: rgb(200, 200, 255);
+$shadow-color: rgba(0, 0, 0, 0.1);
+$highlight-color: rgb(60, 180, 75);
+$error-color: rgb(255, 50, 50);
+
 .header {
     width: 100%;
     background-color: #f4f4f8;
@@ -8,7 +15,7 @@
 .headerContainer {
     display: flex;
     gap: 20px;
-    padding: 0 20px;
+    padding: 10px 20px;
     position: relative;
 }
 
@@ -16,27 +23,27 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    
+    height: 50px;
+    // gap: 10px;
+
     .moduleHeader {
         display: flex;
         align-items: center;
         gap: 10px;
+        margin: 0 10px;
         padding: 10px 15px;
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.1s ease-in-out;
-        
+
         background-color: #ffffff;
         border: 1px solid #e0e0e0;
         box-shadow: 0 2px 5px rgba(138, 79, 255, 0.1);
 
-        &.active, &:hover {
+        &.active,
+        &:hover {
             background-color: rgb(85, 86, 166);
             color: white;
-
-            img {
-                filter: brightness(0) invert(1);
-            }
 
             .span {
                 color: white;
@@ -57,8 +64,8 @@
     .dropdown {
         position: absolute;
         top: 100%;
-        left: 0;
-        min-width: 200px;
+        // left: 0;
+        min-width: 150px;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -66,7 +73,7 @@
         padding: 10px 0;
         margin-top: 10px;
         border: 1px solid #e0e0e0;
-        animation: fadeIn 0.1s ease-in-out;
+        animation: all 0.1s ease-in;
     }
 
     .dropdownItem {
@@ -76,26 +83,21 @@
         background: none;
         border: none;
         cursor: pointer;
-        transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in;
 
         &:hover {
             background-color: #f4f4f8;
             color: rgb(85, 86, 166);
         }
+
+        &.selected {
+            background: $primary-color;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+        }
     }
 }
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 
 .inputDiv {
     display: flex;
@@ -109,8 +111,9 @@
     outline: none;
     padding-left: 0.9rem;
     background-color: transparent;
+    width: 150px;
 
-    &:focus{
+    &:focus {
         border: none;
         outline: none;
     }
@@ -127,7 +130,7 @@
     padding: 0.5rem;
     background-color: rgba(85, 86, 166, 0.1);
 
-    &:focus-within{
+    &:focus-within {
         border: 1px solid black;
     }
 }
@@ -137,4 +140,75 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 10px;
+    background-color: white;
+    border-radius: 6px;
+    padding: 5px 5px;
+    margin: 0 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .btn {
+        padding: 8px 16px;
+        background-color: $primary-color;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: white;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.tableDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.table {
+    width: 80%;
+    border-radius: 8px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow: hidden;
+    background: white;
+    border: 1px solid $border-color;
+    white-space: nowrap;
+
+    .th,
+    .td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid $border-color;
+    }
+
+    .th {
+        font-weight: bold;
+        background-color: $primary-color;
+        color: white;
+    }
+
+    .td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+    }
 }

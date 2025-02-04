@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListing from "@/components/product-master/ProductListing";
+import Navbar from "@/components/Navbar";
 
 const submodulePage = () => {
     let params = useParams();
@@ -26,8 +27,7 @@ const submodulePage = () => {
 
     return (
         <div>
-            <h1>Module : {module}</h1>
-            <h2>Submodule : {submodule}</h2>
+            <Navbar />
             {
                 currentModule === "ProductListing" ? (
                     <ProductListing />
