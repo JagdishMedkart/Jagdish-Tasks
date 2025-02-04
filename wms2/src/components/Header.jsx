@@ -39,11 +39,11 @@ const Header = () => {
                             <Image 
                                 src={module.image} 
                                 alt={module.name} 
-                                width={30} 
-                                height={30} 
+                                width={20} 
+                                height={20} 
                                 style={{ objectFit: 'contain' }}
                             />
-                            <span>{module.name}</span>
+                            <span className={styles.span}>{module.name}</span>
                         </div>
                         {module.submodules.length > 0 && openModule === module.name && (
                             <div className={styles.dropdown}>

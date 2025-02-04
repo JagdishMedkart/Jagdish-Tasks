@@ -95,3 +95,46 @@
         transform: translateY(0);
     }
 }
+
+
+.inputDiv {
+    display: flex;
+    // flex-wrap: wrap;
+    flex-direction: row;
+    // background: rgba(85, 86, 166, 0.3);
+}
+
+.input {
+    border: none;
+    outline: none;
+    padding-left: 0.9rem;
+    background-color: transparent;
+
+    &:focus{
+        border: none;
+        outline: none;
+    }
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    align-items: center;
+    width: 100%;
+    border: 1px solid transparent;
+    margin: 0.8rem;
+    padding: 0.5rem;
+    background-color: rgba(85, 86, 166, 0.1);
+
+    &:focus-within{
+        border: 1px solid black;
+    }
+}
+
+.searchContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

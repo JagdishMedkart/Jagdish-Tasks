@@ -1,0 +1,71 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "@/features/products/productSlice";
+import "@/styles/ProductTable.module.scss";
+
+const ProductTable = () => {
+    const dispatch = useDispatch();
+    const { products, meta, isLoading } = useSelector((state) => state.products);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        dispatch(fetchProducts({ page: currentPage }));
+    }, [dispatch, currentPage]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= meta.last_page) {
+            setCurrentPage(newPage);
+        }
+    };
+
+    return (
+        <div className="table-container">
+            <h2>Product List</h2>
+            {isLoading ? (
+                <p>Loading products...</p>
+            ) : (
+                <>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>WS Code</th>
+                                <th>Name</th>
+                                <th>Manufacturer</th>
+                                <th>Combination</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.map((product) => (
+                                <tr key={product.product_id}>
+                                    <td>{product.product_code}</td>
+                                    <td>{product.ws_code}</td>
+                                    <td>{product.product_name}</td>
+                                    <td>{product.manufacturer}</td>
+                                    <td>{product.combination}</td>
+                                    <td className={`status ${product.is_banned ? "banned" : "active"}`}>
+                                        {product.is_banned ? "Banned" : "Active"}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                            ← Previous
+                        </button>
+                        <span>Page {currentPage} of {meta.last_page}</span>
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === meta.last_page}>
+                            Next →
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+export default ProductTable;
