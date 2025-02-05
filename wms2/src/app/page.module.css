@@ -184,8 +184,8 @@ a.secondary {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 100%;
-  margin: 0 11%;
+  /* width: 100%; */
+  /* margin: 0 11%; */
   margin-top: 20px;
   background-color: #f7fafc;
 }
@@ -202,4 +202,36 @@ a.secondary {
 
 .arrow {
   margin-left: 5px;
+}
+
+.btn {
+  background-color: rgb(85, 86, 166);
+  color: white;
+  margin-top: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  font-size: .95rem;
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+.mainBelowHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  margin: 0 10%;
+  background-color: #f7fafc;
+}
+
+.proxy {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -10,9 +10,10 @@ import {
     setSearchBy,
     setSearchKey,
     setPageChanged,
-    setMeta
+    setMeta,
 } from "@/features/products/productSlice";
 import Filter from "./Filter";
+import { useRouter } from "next/navigation";
 
 const ProductListing = () => {
     const {
@@ -24,12 +25,13 @@ const ProductListing = () => {
         search_by,
         search_key,
         filters,
-        pageChanged
+        pageChanged,
     } = useSelector((state) => state.products);
     const token = useSelector((state) => state.auth.token);
     // const [currentPage, setCurrentPage] = useState(meta.current_page);
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
 
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
@@ -109,22 +111,28 @@ const ProductListing = () => {
                     search_by: search_by,
                     search_key: search_key,
                     filters: filters,
-                    pageChanged: pageChanged
+                    pageChanged: pageChanged,
                 },
             })
         );
-    }, [dispatch, meta.current_page, sort_by, asc, search_by, search_key, filters]);
+    }, [
+        dispatch,
+        meta.current_page,
+        sort_by,
+        asc,
+        search_by,
+        search_key,
+        filters,
+    ]);
 
     const handlePageChange = (newPage) => {
         if (!newPage) {
             dispatch(setPageChanged(true));
             dispatch(setMeta(1));
-        }
-        else if (newPage > meta.last_page) {
+        } else if (newPage > meta.last_page) {
             dispatch(setPageChanged(true));
             dispatch(setMeta(meta.last_page));
-        }
-        else {
+        } else {
             dispatch(setPageChanged(true));
             dispatch(setMeta(newPage));
         }
@@ -159,7 +167,9 @@ const ProductListing = () => {
                                             value={search_key}
                                             placeholder="Search by..."
                                             onChange={(e) => {
-                                                if (e.target.value.includes(" ")) {
+                                                if (
+                                                    e.target.value.includes(" ")
+                                                ) {
                                                     e.target.value =
                                                         e.target.value.replace(
                                                             /\s/g,
@@ -179,9 +189,13 @@ const ProductListing = () => {
                                     className={`${styles.moduleHeader}`}
                                     onClick={() => handleSearchToggle("search")}
                                 >
-                                    <span className={styles.span}>{search_by?.map((value) => (
-                                        value.active === true && value.show
-                                    ))}</span>
+                                    <span className={styles.span}>
+                                        {search_by?.map(
+                                            (value) =>
+                                                value.active === true &&
+                                                value.show
+                                        )}
+                                    </span>
                                 </div>
                             </div>
                             <div
@@ -198,8 +212,9 @@ const ProductListing = () => {
                                 <span className={styles.span}>Filter</span>
                             </div>
                             <div
-                                className={`${styles.moduleHeader} ${openModule === "sort" ? styles.active : ""
-                                    }`}
+                                className={`${styles.moduleHeader} ${
+                                    openModule === "sort" ? styles.active : ""
+                                }`}
                                 onClick={() => handleModuleToggle("sort")}
                             >
                                 <Image
@@ -231,7 +246,13 @@ const ProductListing = () => {
                                     {sort_by?.map((item, ind) => (
                                         <button
                                             key={ind}
-                                            className={`${styles.dropdownItem} ${item.active ? styles.selected : ""}`}
+                                            className={`${
+                                                styles.dropdownItem
+                                            } ${
+                                                item.active
+                                                    ? styles.selected
+                                                    : ""
+                                            }`}
                                             onClick={() => {
                                                 sortBy(ind);
                                             }}
@@ -246,7 +267,13 @@ const ProductListing = () => {
                                     {search_by?.map((item, ind) => (
                                         <button
                                             key={ind}
-                                            className={`${styles.dropdownItem} ${item.active ? styles.selected : ""}`}
+                                            className={`${
+                                                styles.dropdownItem
+                                            } ${
+                                                item.active
+                                                    ? styles.selected
+                                                    : ""
+                                            }`}
                                             onClick={() => {
                                                 searchBy(ind);
                                             }}
@@ -266,11 +293,14 @@ const ProductListing = () => {
                             <thead>
                                 <tr>
                                     <th className={styles.th}>Product Code</th>
-                                    <th className={styles.th}>Wondersoft Code</th>
+                                    <th className={styles.th}>
+                                        Wondersoft Code
+                                    </th>
                                     <th className={styles.th}>Product Name</th>
                                     <th className={styles.th}>Manufacturer</th>
                                     <th className={styles.th}>Combination</th>
                                     <th className={styles.th}>Status</th>
+                                    <th className={styles.th}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -291,8 +321,54 @@ const ProductListing = () => {
                                         <td className={styles.td}>
                                             {product?.combination}
                                         </td>
+                                        <td className={`${styles.td}`}>
+                                            <span
+                                                className={`${styles.status} ${
+                                                    product.publish_status ===
+                                                    "Published"
+                                                        ? styles.published
+                                                        : product.publish_status ===
+                                                          "Unpublished"
+                                                        ? styles.unpublished
+                                                        : styles.draft
+                                                }`}
+                                            >
+                                                <span
+                                                    className={`${styles.dot} ${
+                                                        product.publish_status ===
+                                                        "Published"
+                                                            ? styles.publishedDot
+                                                            : product.publish_status ===
+                                                              "Unpublished"
+                                                            ? styles.unpublishedDot
+                                                            : styles.draftDot
+                                                    }`}
+                                                >
+                                                    {"•"}
+                                                </span>
+                                                {product.publish_status}
+                                            </span>
+                                        </td>
                                         <td className={styles.td}>
-                                            {product?.publish_status}
+                                            <div className={styles.belowHeader}>
+                                                <Image
+                                                    alt="edit"
+                                                    src="/edit.png"
+                                                    width={20}
+                                                    height={20}
+                                                    onClick={() => {
+                                                        router.push(
+                                                            "/dashboard"
+                                                        );
+                                                    }}
+                                                />
+                                                <Image
+                                                    alt="add"
+                                                    src="/add.png"
+                                                    width={20}
+                                                    height={20}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -301,7 +377,9 @@ const ProductListing = () => {
                         <div className={styles.pagination}>
                             <button
                                 className={styles.btn}
-                                onClick={() => handlePageChange(meta.current_page - 1)}
+                                onClick={() =>
+                                    handlePageChange(meta.current_page - 1)
+                                }
                                 disabled={meta.current_page === 1}
                             >
                                 Previous
@@ -318,7 +396,9 @@ const ProductListing = () => {
                                     //             ""
                                     //         );
                                     // }
-                                    handlePageChange(Number(e.target.value.trim()));
+                                    handlePageChange(
+                                        Number(e.target.value.trim())
+                                    );
                                 }}
                             />
                             <span className={styles.spanLast}>
@@ -326,7 +406,9 @@ const ProductListing = () => {
                             </span>
                             <button
                                 className={styles.btn}
-                                onClick={() => handlePageChange(meta.current_page + 1)}
+                                onClick={() =>
+                                    handlePageChange(meta.current_page + 1)
+                                }
                                 disabled={meta.current_page === meta.last_page}
                             >
                                 Next

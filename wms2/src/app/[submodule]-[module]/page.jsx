@@ -32,28 +32,34 @@ const submodulePage = () => {
         <div className={styles.mainDiv}>
             <Navbar />
             <Header />
-            <div className={styles.belowHeader}>
-                <Image
-                    alt="home"
-                    src="/home.png"
-                    width={20}
-                    height={20}
-                    onClick={() => {
-                        router.push("/dashboard");
-                    }}
-                />
-                <Image
-                    alt="arrow"
-                    src="/arrow.png"
-                    width={8}
-                    height={10}
-                    className={styles.arrow}
-                />
-                <span className={styles.textSpan}>
-                    {String(submodule).charAt(0).toUpperCase() + submodule.slice(1)}
-                    {" "}
-                    {String(module).charAt(0).toUpperCase() + module.slice(1)}
-                </span>
+            <div className={styles.mainBelowHeader}>
+                <div className={styles.proxy}>
+                    <div className={styles.belowHeader}>
+                        <Image
+                            alt="home"
+                            src="/home.png"
+                            width={20}
+                            height={20}
+                            onClick={() => {
+                                router.push("/dashboard");
+                            }}
+                        />
+                        <Image
+                            alt="arrow"
+                            src="/arrow.png"
+                            width={8}
+                            height={10}
+                            className={styles.arrow}
+                        />
+                        <span className={styles.textSpan}>
+                            {String(submodule).charAt(0).toUpperCase() +
+                                submodule.slice(1)}{" "}
+                            {String(module).charAt(0).toUpperCase() +
+                                module.slice(1)}
+                        </span>
+                    </div>
+                    <button className={styles.btn}>{"+ Add"}</button>
+                </div>
             </div>
             {currentModule === "ProductListing" ? (
                 <ProductListing />
