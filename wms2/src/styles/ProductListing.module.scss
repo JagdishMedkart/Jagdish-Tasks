@@ -7,7 +7,7 @@ $error-color: rgb(255, 50, 50);
 
 .header {
     width: 100%;
-    background-color: #f4f4f8;
+    background-color: white;
     position: relative;
     z-index: 9;
     height: 100%;
@@ -237,6 +237,7 @@ $error-color: rgb(255, 50, 50);
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #f7fafc;
 }
 
 .innerListing {

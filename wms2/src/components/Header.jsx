@@ -19,50 +19,44 @@ const Header = () => {
         setOpenModule(null); // Close dropdown after navigation
     };
 
-    if (isLoading) return (
-        <div className={styles.header}>
-            <div className={styles.headerContainer}>
-                <p>Loading modules...</p>
-            </div>
-        </div>
-    );
+    if (isLoading) return null;
 
-    return (
-        <nav className={styles.header}>
-            <div className={styles.headerContainer}>
-                {modules.map((module) => (
-                    <div key={module.name} className={styles.module}>
-                        <div 
-                            className={`${styles.moduleHeader} ${openModule === module.name ? styles.active : ''}`}
-                            onClick={() => handleModuleToggle(module.name)}
-                        >
-                            <Image 
-                                src={module.image} 
-                                alt={module.name} 
-                                width={20} 
-                                height={20} 
-                                style={{ objectFit: 'contain' }}
-                            />
-                            <span className={styles.span}>{module.name}</span>
-                        </div>
-                        {module.submodules.length > 0 && openModule === module.name && (
-                            <div className={styles.dropdown}>
-                                {module.submodules.map((submodule) => (
-                                    <button 
-                                        key={submodule} 
-                                        className={styles.dropdownItem} 
-                                        onClick={() => handleNavigation(module.name, submodule)}
-                                    >
-                                        {submodule}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+return (
+    < nav className={styles.header} >
+        <div className={styles.headerContainer}>
+            {modules.map((module) => (
+                <div key={module.name} className={styles.module}>
+                    <div
+                        className={`${styles.moduleHeader} ${openModule === module.name ? styles.active : ''}`}
+                        onClick={() => handleModuleToggle(module.name)}
+                    >
+                        <Image
+                            src={module.image}
+                            alt={module.name}
+                            width={24}
+                            height={24}
+                            style={{ objectFit: 'contain' }}
+                        />
+                        <span className={styles.span2}>{module.name}</span>
                     </div>
-                ))}
-            </div>
-        </nav>
-    );
+                    {module.submodules.length > 0 && openModule === module.name && (
+                        <div className={styles.dropdown}>
+                            {module.submodules.map((submodule) => (
+                                <button
+                                    key={submodule}
+                                    className={styles.dropdownItem}
+                                    onClick={() => handleNavigation(module.name, submodule)}
+                                >
+                                    {submodule}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+    </nav >
+);
 };
 
 export default Header;

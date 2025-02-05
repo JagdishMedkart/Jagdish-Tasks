@@ -1,6 +1,6 @@
 .header {
     width: 100%;
-    background-color: #f4f4f8;
+    background-color: white;
     position: relative;
     z-index: 9;
 }
@@ -8,8 +8,8 @@
 .headerContainer {
     display: flex;
     gap: 20px;
-    padding: 0 20px;
     position: relative;
+    margin: 0 10%;
 }
 
 .module {
@@ -39,14 +39,14 @@
                 filter: brightness(0) invert(1);
             }
 
-            .span {
+            span {
                 color: white;
             }
         }
 
         span {
-            font-weight: 600;
-            color: #333;
+            font-weight: 500;
+            color: rgb(85, 86, 166);
             white-space: nowrap;
         }
 
