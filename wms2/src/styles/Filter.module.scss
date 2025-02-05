@@ -24,7 +24,7 @@ $clear-button-color: rgb(255, 50, 50);
     position: relative;
     display: flex;
     flex-direction: row;
-    
+
     .moduleHeader {
         display: flex;
         align-items: center;
@@ -33,12 +33,13 @@ $clear-button-color: rgb(255, 50, 50);
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.1s ease-in-out;
-        
+
         background-color: #ffffff;
         border: 1px solid #e0e0e0;
         box-shadow: 0 2px 5px rgba(138, 79, 255, 0.1);
 
-        &.active, &:hover {
+        &.active,
+        &:hover {
             background-color: rgb(85, 86, 166);
             color: white;
 
@@ -55,6 +56,7 @@ $clear-button-color: rgb(255, 50, 50);
             font-weight: 600;
             color: white;
             white-space: nowrap;
+            font-size: 14px;
         }
 
         img {
@@ -82,7 +84,8 @@ $clear-button-color: rgb(255, 50, 50);
         animation: fadeIn 0.1s ease-in-out;
     }
 
-    .dropdownItem {
+    .dropdownItem,
+    .dropdownItem2 {
         width: 100%;
         text-align: left;
         padding: 10px 15px;
@@ -90,6 +93,9 @@ $clear-button-color: rgb(255, 50, 50);
         border: none;
         cursor: pointer;
         transition: all 0.1s ease-in-out;
+        white-space: nowrap;
+        overflow: hidden;
+        // max-width: 250px;
 
         &:hover {
             background-color: #f4f4f8;
@@ -103,6 +109,10 @@ $clear-button-color: rgb(255, 50, 50);
             border-radius: 4px;
         }
     }
+
+    .dropdownItem2 {
+        padding: 5px 15px;
+    }
 }
 
 @keyframes fadeIn {
@@ -110,6 +120,7 @@ $clear-button-color: rgb(255, 50, 50);
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -118,7 +129,6 @@ $clear-button-color: rgb(255, 50, 50);
 
 
 .activeFilter {
-    font-weight: bold;
     color: white;
 }
 
@@ -142,4 +152,42 @@ $clear-button-color: rgb(255, 50, 50);
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+
+.inputDiv {
+    display: flex;
+    // flex-wrap: wrap;
+    flex-direction: row;
+    width: 80%;
+    // background: rgba(85, 86, 166, 0.3);
+}
+
+.input {
+    border: none;
+    outline: none;
+    padding-left: 0.9rem;
+    background-color: transparent;
+    // width: 150px;
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    align-items: center;
+    width: 90%;
+    border: 1px solid transparent;
+    margin: 5px 5%;
+    padding: 0.5rem;
+    background-color: rgba(85, 86, 166, 0.1);
+
+    &:focus-within {
+        border: 1px solid black;
+    }
 }

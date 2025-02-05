@@ -11,6 +11,7 @@ $error-color: rgb(255, 50, 50);
     position: relative;
     z-index: 9;
     height: 100%;
+    // border-radius: 20px;
 }
 
 .headerContainer {
@@ -18,6 +19,7 @@ $error-color: rgb(255, 50, 50);
     gap: 20px;
     padding: 10px 20px;
     position: relative;
+    // justify-content: space-between;
 }
 
 .module {
@@ -25,6 +27,7 @@ $error-color: rgb(255, 50, 50);
     display: flex;
     flex-direction: row;
     height: 50px;
+    // justify-content: space-between;
     // gap: 10px;
 
     .moduleHeader {
@@ -107,7 +110,7 @@ $error-color: rgb(255, 50, 50);
     // background: rgba(85, 86, 166, 0.3);
 }
 
-.input {
+.input, .input2 {
     border: none;
     outline: none;
     padding-left: 0.9rem;
@@ -117,6 +120,19 @@ $error-color: rgb(255, 50, 50);
     &:focus {
         border: none;
         outline: none;
+    }
+}
+
+.input2 {
+    width: 50px;
+    font-size: 16px;
+    border: 1px solid rgb(85, 86, 166);
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px;
+
+    &:focus {
+        border: 1px solid rgb(85, 86, 166);
     }
 }
 
@@ -150,7 +166,7 @@ $error-color: rgb(255, 50, 50);
 }
 
 .pagination {
-    margin-top: 20px;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -184,7 +200,7 @@ $error-color: rgb(255, 50, 50);
 }
 
 .table {
-    width: 80%;
+    width: 100%;
     border-radius: 8px;
     border-collapse: collapse;
     margin-top: 20px;
@@ -211,5 +227,34 @@ $error-color: rgb(255, 50, 50);
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 150px;
+        font-size: 14px;
     }
+}
+
+.mainListing {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.innerListing {
+    width: 80%;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 20px;
+}
+
+.spanLast {
+    font-size: 16px;
+}
+
+.rightDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }

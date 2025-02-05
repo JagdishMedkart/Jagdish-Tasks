@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductListing from "@/components/product-master/ProductListing";
 import Navbar from "@/components/Navbar";
 import styles from "../page.module.css";
+import Header from "@/components/Header";
 
 const submodulePage = () => {
     let params = useParams();
@@ -29,6 +30,7 @@ const submodulePage = () => {
     return (
         <div className={styles.mainDiv}>
             <Navbar />
+            <Header />
             {currentModule === "ProductListing" ? (
                 <ProductListing />
             ) : (

@@ -22,7 +22,12 @@ const initialState = {
         {actual: "is_assured", show: "isAssured", values: ["Yes", "No"], active: "false"},
         {actual: "is_refrigerated", show: "isRefrigerated", values: ["Yes", "No"], active: "false"},
         {actual: "publish_status", show: "Status", values: ["Published", "Unpublished", "Draft"], active: "false"},
-    ]
+        {actual: "manufacturers", pref: "manufacturer", show: "Manufacturer", active: "false" },
+        {actual: "molecules", pref: "combination", show: "Combination", active: "false" }
+    ],
+    manufacturers: {text: "", values: []},
+    molecules: {text: "", values: []},
+    pageChanged: false,
 };
 
 export const productSliceReducer = createSlice({
@@ -42,6 +47,7 @@ export const productSliceReducer = createSlice({
                         asc: action.payload.payload.asc,
                         filters: action.payload.payload.filters,
                         isLoading: true,
+                        pageChanged: action.payload.payload.pageChanged
                     };
                 default:
                     return state;
@@ -69,7 +75,55 @@ export const productSliceReducer = createSlice({
         },
         setFilters: (state, action) => {
             return { ...state, filters: action.payload};
-        }
+        },
+        fetchManufacturers: (state, action) => {
+            return {
+                ...state, 
+                manufacturers: { ...state.manufacturers, text: action?.payload?.text ? action.payload.text : "" },
+            }
+        },
+        fetchMolecules: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, text: action?.payload?.text ? action.payload.text : "" },
+            }
+        },
+        setManufacturers: (state, action) => {
+            return {
+                ...state,
+                manufacturers: { ...state.manufacturers, values: action.payload }
+            };
+        },
+        setMolecules: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, values: action.payload }
+            };
+        },
+        setManufacturerText: (state, action) => {
+            return {
+                ...state,
+                manufacturers: { ...state.manufacturers, text: action.payload }
+            }
+        },
+        setMoleculesText: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, text: action.payload }
+            }
+        },
+        setPageChanged: (state, action) => {
+            return {
+                ...state,
+                pageChanged: action.payload
+            }
+        },
+        setMeta: (state, action) => {
+            return {
+                ...state,
+                meta: { ...state.meta, current_page: action.payload}
+            }
+        },
     },
 });
 
@@ -82,6 +136,14 @@ export const
         setSortBy,
         setSearchKey,
         setSearchBy,
-        setFilters
+        setFilters,
+        fetchManufacturers,
+        fetchMolecules,
+        setManufacturers,
+        setMolecules,
+        setManufacturerText,
+        setMoleculesText,
+        setPageChanged,
+        setMeta
     } = productSliceReducer.actions;
 export const productReducer = productSliceReducer.reducer;
