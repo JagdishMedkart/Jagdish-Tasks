@@ -35,7 +35,7 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
     const router = useRouter();
     let currentPath = useParams();
     currentPath = Object.values(currentPath);
-    
+
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
     const [openFilter, setOpenFilter] = useState(null);
@@ -309,7 +309,7 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
                                                             header?.actions?
                                                                 header?.actions?.map((action) => {
                                                                     return (
-                                                                        <button onClick={()=>{ onClickAction(action)}}>{action.fieldKey}</button>
+                                                                        <button onClick={()=>{ onClickAction(action,product)}}>{action.fieldKey}</button>
                                                                     )
                                                                 })
                                                             :

@@ -75,7 +75,13 @@ const submodulePage = () => {
                 // <ProductListing onClickAction={(action,product)=>{
 
                 // }} />
-                <ProductListing />
+                <ProductListing onClickAction={(action,data)=>{
+                    if(action.fieldKey){
+                        router.push("/product/edit/"+data?.product_id)
+                    }
+                    console.log("action,data",action,data);
+                    
+                }} />
             ) : (
                 <h1>Anything</h1>
             )}
