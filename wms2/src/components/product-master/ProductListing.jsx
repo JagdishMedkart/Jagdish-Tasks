@@ -13,9 +13,10 @@ import {
     setMeta,
 } from "@/features/products/productSlice";
 import Filter from "./Filter";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useParams } from "next/navigation";
+import { productStructure } from "@/utils/productStructure";
 
-const ProductListing = () => {
+const ProductListing = ({ title, Struct }) => {
     const {
         products,
         isLoading,
@@ -32,6 +33,9 @@ const ProductListing = () => {
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
+    let currentPath = useParams();
+    currentPath = Object.values(currentPath);
+    let uuid = self.crypto.randomUUID();
 
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
@@ -100,6 +104,7 @@ const ProductListing = () => {
         // console.log("page = ", currentPage);
         console.log("sort_by = ", sort_by);
         console.log("asc = ", asc);
+        console.log("current path = ", currentPath);
         dispatch(
             fetchProducts({
                 type: "pageChange",
@@ -212,9 +217,8 @@ const ProductListing = () => {
                                 <span className={styles.span}>Filter</span>
                             </div>
                             <div
-                                className={`${styles.moduleHeader} ${
-                                    openModule === "sort" ? styles.active : ""
-                                }`}
+                                className={`${styles.moduleHeader} ${openModule === "sort" ? styles.active : ""
+                                    }`}
                                 onClick={() => handleModuleToggle("sort")}
                             >
                                 <Image
@@ -246,13 +250,11 @@ const ProductListing = () => {
                                     {sort_by?.map((item, ind) => (
                                         <button
                                             key={ind}
-                                            className={`${
-                                                styles.dropdownItem
-                                            } ${
-                                                item.active
+                                            className={`${styles.dropdownItem
+                                                } ${item.active
                                                     ? styles.selected
                                                     : ""
-                                            }`}
+                                                }`}
                                             onClick={() => {
                                                 sortBy(ind);
                                             }}
@@ -267,13 +269,11 @@ const ProductListing = () => {
                                     {search_by?.map((item, ind) => (
                                         <button
                                             key={ind}
-                                            className={`${
-                                                styles.dropdownItem
-                                            } ${
-                                                item.active
+                                            className={`${styles.dropdownItem
+                                                } ${item.active
                                                     ? styles.selected
                                                     : ""
-                                            }`}
+                                                }`}
                                             onClick={() => {
                                                 searchBy(ind);
                                             }}
@@ -292,84 +292,28 @@ const ProductListing = () => {
                         <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th className={styles.th}>Product Code</th>
-                                    <th className={styles.th}>
-                                        Wondersoft Code
-                                    </th>
-                                    <th className={styles.th}>Product Name</th>
-                                    <th className={styles.th}>Manufacturer</th>
-                                    <th className={styles.th}>Combination</th>
-                                    <th className={styles.th}>Status</th>
-                                    <th className={styles.th}></th>
+                                    {productStructure.headers.map((header) => (
+                                        <th key={header.key} className={styles.th}>
+                                            {header.display}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                {products.map((product) => (
-                                    <tr key={product?.product_id}>
-                                        <td className={styles.td}>
-                                            {product?.product_code}
-                                        </td>
-                                        <td className={styles.td}>
-                                            {product?.ws_code}
-                                        </td>
-                                        <td className={styles.td}>
-                                            {product?.product_name}
-                                        </td>
-                                        <td className={styles.td}>
-                                            {product?.manufacturer}
-                                        </td>
-                                        <td className={styles.td}>
-                                            {product?.combination}
-                                        </td>
-                                        <td className={`${styles.td}`}>
-                                            <span
-                                                className={`${styles.status} ${
-                                                    product.publish_status ===
-                                                    "Published"
-                                                        ? styles.published
-                                                        : product.publish_status ===
-                                                          "Unpublished"
-                                                        ? styles.unpublished
-                                                        : styles.draft
-                                                }`}
-                                            >
-                                                <span
-                                                    className={`${styles.dot} ${
-                                                        product.publish_status ===
-                                                        "Published"
-                                                            ? styles.publishedDot
-                                                            : product.publish_status ===
-                                                              "Unpublished"
-                                                            ? styles.unpublishedDot
-                                                            : styles.draftDot
-                                                    }`}
-                                                >
-                                                    {"•"}
-                                                </span>
-                                                {product.publish_status}
-                                            </span>
-                                        </td>
-                                        <td className={styles.td}>
-                                            <div className={styles.belowHeader}>
-                                                <Image
-                                                    alt="edit"
-                                                    src="/edit.png"
-                                                    width={20}
-                                                    height={20}
-                                                    onClick={() => {
-                                                        router.push(
-                                                            "/dashboard"
-                                                        );
-                                                    }}
-                                                />
-                                                <Image
-                                                    alt="add"
-                                                    src="/add.png"
-                                                    width={20}
-                                                    height={20}
-                                                />
-                                            </div>
-                                        </td>
+                                {products.map((product, ind) => (
+                                    <tr key={`${product.product_id}`}>
+                                        {
+                                            productStructure?.headers.map((header) => {
+                                                let value = product[header.key];
+                                                return (
+                                                    <td key={`${header.key}-${product.product_id}`} className={`${styles.td}`}>
+                                                        {
+                                                            header?.customField ? header?.customField(product) : value
+                                                        }
+                                                    </td>
+                                                )
+                                            })
+                                        }
                                     </tr>
                                 ))}
                             </tbody>
@@ -414,10 +358,10 @@ const ProductListing = () => {
                                 Next
                             </button>
                         </div>
-                    </div>
+                    </div >
                 )}
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

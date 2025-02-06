@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/Filter.module.scss";
 import { fetchManufacturers, setFilters, fetchMolecules, setManufacturerText, setMoleculesText, setPageChanged, setMeta } from "@/features/products/productSlice";
 import Image from "next/image";
+import { productStructure } from "@/utils/productStructure";
 
 const Filter = () => {
     const { filters, pageChanged } = useSelector((state) => state.products);

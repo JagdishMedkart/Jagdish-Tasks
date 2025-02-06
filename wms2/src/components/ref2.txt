@@ -1,184 +1,42 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styles from "../../styles/Filter.module.scss";
-import {
-    fetchManufacturers,
-    setFilters,
-    fetchMolecules,
-    setManufacturerText,
-    setMoleculesText,
-    setPageChanged,
-    setMeta
-} from "@/features/products/productSlice";
-import Image from "next/image";
+import React from "react";
+import styles from "../../styles/ProductListing.module.scss";
+import { productStructure } from "@/utils/productStructure"; // adjust the path as needed
 
-const Filter = () => {
-    const { filters } = useSelector((state) => state.products);
-    const token = useSelector((state) => state.auth.token);
-    const manufacturer = useSelector((state) => state.products.manufacturers);
-    const molecule = useSelector((state) => state.products.molecules);
-    const dispatch = useDispatch();
-    const [openModule, setOpenModule] = useState(null);
-
-    const dropdownRef = useRef(null); // ✅ Ref for closing dropdowns
-
-    /** ✅ Close dropdown when clicking outside */
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setOpenModule(null);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
-    useEffect(() => {
-        console.log("Updated Manufacturer List:", manufacturer.values);
-    }, [manufacturer.values]);
-
-    useEffect(() => {
-        console.log("Updated Molecules List:", molecule.values);
-    }, [molecule.values]);
-
-    const handleModuleToggle = (index) => {
-        if (openModule === index) {
-            setOpenModule(null);
-            return;
-        }
-
-        const filter = filters[index];
-        if (!filter?.values?.length) {
-            if (filter.actual === "manufacturers") {
-                dispatch(fetchManufacturers({ token }));
-            } else if (filter.actual === "molecules") {
-                dispatch(fetchMolecules({ token }));
-            }
-        }
-        setOpenModule(index);
-    };
-
-    const handleSearch = (index, text, type) => {
-        if (type === "manufacturers") {
-            dispatch(setManufacturerText(text));
-            dispatch(fetchManufacturers({ token, text }));
-        } else {
-            dispatch(setMoleculesText(text));
-            dispatch(fetchMolecules({ token, text }));
-        }
-    };
-
-    const handleFilterSelection = (index, value, id = null) => {
-        const updatedFilters = filters.map((item, key) => 
-            key === index ? { ...item, active: value, id } : item
-        );
-
-        dispatch(setPageChanged(false));
-        dispatch(setMeta(1));
-        dispatch(setFilters(updatedFilters));
-
-        // ✅ Ensure dropdown closes *after* state updates
-        setTimeout(() => setOpenModule(null), 100);
-    };
-
-    const clearFilter = (index) => {
-        const updatedFilters = filters.map((item, key) =>
-            key === index ? { ...item, active: "false" } : item
-        );
-
-        dispatch(setPageChanged(false));
-        dispatch(setMeta(1));
-        dispatch(setFilters(updatedFilters));
-        setOpenModule(null);
-    };
-
-    return (
-        <nav className={styles.header} ref={dropdownRef}> {/* ✅ Assign ref */}
-            <div className={styles.headerContainer}>
-                {filters.map((filter, index) => (
-                    <div key={index} className={styles.module}>
-                        <div
-                            className={`${styles.moduleHeader} ${filter.active !== "false" ? styles.selected : ""}`}
-                            onClick={() => handleModuleToggle(index)}
-                        >
-                            <div className={styles.filterContainer}>
-                                <span className={styles.span}>
-                                    {filter?.show}
-                                    {filter.active !== "false" ? `: ${filter.active}` : ""}
-                                </span>
-                                {filter.active !== "false" && (
-                                    <button
-                                        className={styles.clearBtn}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            clearFilter(index);
-                                        }}
-                                    >
-                                        X
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-
-                        {openModule === index && (
-                            <div className={styles.dropdown}>
-                                {/* ✅ Show dropdown for static filter values */}
-                                {filter?.values?.length > 0 && (
-                                    <>
-                                        {filter.values.map((value) => (
-                                            <button
-                                                key={value}
-                                                className={`${styles.dropdownItem} ${filter.active === value ? styles.selectedItem : ""}`}
-                                                onClick={() => handleFilterSelection(index, value)}
-                                            >
-                                                {value}
-                                            </button>
-                                        ))}
-                                    </>
-                                )}
-
-                                {/* ✅ Manufacturer & Molecules dropdown with search */}
-                                {!filter.hasOwnProperty("values") && (
-                                    <>
-                                        <div className={styles.inputContainer}>
-                                            <div className={styles.inputDiv}>
-                                                <Image
-                                                    alt="search"
-                                                    src="/search.png"
-                                                    width={19}
-                                                    height={19}
-                                                />
-                                                <input
-                                                    className={styles.input}
-                                                    type="text"
-                                                    value={filter.actual === "manufacturers" ? manufacturer.text : molecule.text}
-                                                    placeholder="Search..."
-                                                    onChange={(e) => handleSearch(index, e.target.value.trim(), filter.actual)}
-                                                />
-                                            </div>
-                                        </div>
-                                        {(filter.actual === "manufacturers" ? manufacturer.values : molecule.values).map((value) => (
-                                            <button
-                                                key={value.id}
-                                                className={`${styles.dropdownItem2} ${filter.active === value.name ? styles.selectedItem : ""}`}
-                                                onClick={() => handleFilterSelection(index, value.name, value.id)}
-                                            >
-                                                {value.name}
-                                            </button>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
-        </nav>
-    );
+const ProductTable = ({ products }) => {
+  return (
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          {productStructure.headers.map((header) => (
+            <th key={header.key} className={styles.th}>
+              {header.display}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((product, rowIndex) => (
+          <tr key={`product-${rowIndex}`}>
+            {productStructure.headers.map((header) => {
+              const value = product[header.key];
+              let extraClass = "";
+              if (header.key === "publish_status" && header.values && header.values[value]) {
+                // header.values[value] is a string like "styles.publishedDot"
+                // We remove the "styles." prefix and use the remaining string to access the class from styles.
+                const classNameKey = header.values[value].replace("styles.", "");
+                extraClass = styles[classNameKey] || "";
+              }
+              return (
+                <td key={`${header.key}-${product.product_id}`} className={`${styles.td} ${extraClass}`}>
+                  {value}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
-export default Filter;
+export default ProductTable;

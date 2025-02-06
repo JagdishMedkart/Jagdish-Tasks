@@ -304,6 +304,19 @@ $draft-color: #7f8c8d;
     }
 }
 
+
+.publishedDot {
+    color: rgb(0, 127, 95);
+}
+
+.unpublishedDot {
+    color: rgb(228, 130, 75);
+}
+
+.draftDot {
+    color: rgb(192, 192, 192);
+}
+
 .belowHeader {
     display: flex;
     flex-direction: row;

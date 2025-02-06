@@ -5,29 +5,25 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListing from "@/components/product-master/ProductListing";
 import Navbar from "@/components/Navbar";
-import styles from "../page.module.css";
+import styles from "../../page.module.css";
 import Header from "@/components/Header";
 import Image from "next/image";
-import { tablePageMeta } from "@/utils/tablePageMeta";
 
 const submodulePage = () => {
     let params = useParams();
-    const products = useSelector((state) => state.products.products);
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
     const [currentModule, setCurrentModule] = useState("");
     const { current_path } = usePathname();
-    const router = useRouter();
 
     console.log("params = ", params);
     params = Object.values(params);
-    const Struct = `${tablePageMeta[params[0]]}`;
-    console.log("struct = ", Struct);
     console.log("new params = ", params);
     params = params[0].split("-");
     let [submodule, module] = params;
 
     useEffect(() => {
+        console.log(params);
         if (token && module === "master" && submodule === "products") {
             dispatch(fetchProducts(token));
             setCurrentModule("ProductListing");
@@ -38,7 +34,7 @@ const submodulePage = () => {
         <div className={styles.mainDiv}>
             <Navbar />
             <Header />
-            <div className={styles.mainBelowHeader}>
+            {/* <div className={styles.mainBelowHeader}>
                 <div className={styles.proxy}>
                     <div className={styles.belowHeader}>
                         <Image
@@ -59,18 +55,18 @@ const submodulePage = () => {
                         />
                         <span className={styles.textSpan}>
                             {String(submodule).charAt(0).toUpperCase() +
-                                submodule.slice(1)}{" "}
+                                submodule?.slice(1)}{" "}
                             {String(module).charAt(0).toUpperCase() +
-                                module.slice(1)}
+                                module?.slice(1)}
                         </span>
                     </div>
                     <button className={styles.btn}
                     onClick={() => {
-                        router.push(`${submodule}-${module}/add-${submodule}`);
+                        router.push(`${current_path}/${Add}-${submodule}`);
                     }}
                     >{"+ Add"}</button>
                 </div>
-            </div>
+            </div> */}
             {currentModule === "ProductListing" ? (
                 <ProductListing />
             ) : (
