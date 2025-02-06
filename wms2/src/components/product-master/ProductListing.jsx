@@ -16,7 +16,7 @@ import Filter from "./Filter";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import { productStructure } from "@/utils/productStructure";
 
-const ProductListing = ({ title, Struct }) => {
+const ProductListing = ({ title, Struct,onClickAction }) => {
     const {
         products,
         isLoading,
@@ -35,8 +35,7 @@ const ProductListing = ({ title, Struct }) => {
     const router = useRouter();
     let currentPath = useParams();
     currentPath = Object.values(currentPath);
-    let uuid = self.crypto.randomUUID();
-
+    
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
     const [openFilter, setOpenFilter] = useState(null);
@@ -304,11 +303,17 @@ const ProductListing = ({ title, Struct }) => {
                                     <tr key={`${product.product_id}`}>
                                         {
                                             productStructure?.headers.map((header) => {
-                                                let value = product[header.key];
                                                 return (
                                                     <td key={`${header.key}-${product.product_id}`} className={`${styles.td}`}>
                                                         {
-                                                            header?.customField ? header?.customField(product) : value
+                                                            header?.actions?
+                                                                header?.actions?.map((action) => {
+                                                                    return (
+                                                                        <button onClick={()=>{ onClickAction(action)}}>{action.fieldKey}</button>
+                                                                    )
+                                                                })
+                                                            :
+                                                            header?.customField ? header?.customField(product) : product[header.key]
                                                         }
                                                     </td>
                                                 )

@@ -65,13 +65,16 @@ const submodulePage = () => {
                         </span>
                     </div>
                     <button className={styles.btn}
-                    onClick={() => {
-                        router.push(`${submodule}-${module}/add-${submodule}`);
-                    }}
+                        onClick={() => {
+                            router.push(`${submodule}-${module}/add-${submodule}`);
+                        }}
                     >{"+ Add"}</button>
                 </div>
             </div>
             {currentModule === "ProductListing" ? (
+                // <ProductListing onClickAction={(action,product)=>{
+
+                // }} />
                 <ProductListing />
             ) : (
                 <h1>Anything</h1>

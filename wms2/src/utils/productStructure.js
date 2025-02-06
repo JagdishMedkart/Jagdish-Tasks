@@ -1,6 +1,5 @@
 import styles from "../styles/ProductListing.module.scss";
 import Image from "next/image";
-
 let baseProductURL = "/product-master";
 
 export const productStructure = {
@@ -65,6 +64,20 @@ export const productStructure = {
         {
             key: "",
             display: "",
+            actions: [
+                {
+                    fieldKey: "edit",
+                    fieldType: "button",
+                    imageURL: "/edit.png",
+                    // src: `${baseProductURL}/edit-product/${product?.product_id}`,
+                },
+                {
+                    fieldKey: "add",
+                    fieldType: "button",
+                    imageURL: "/add.png",
+                    // src: `${baseProductURL}/add-product`,
+                },
+            ],
             customField: (product) => {
                 return (
                     <div className={styles.belowHeader}>
