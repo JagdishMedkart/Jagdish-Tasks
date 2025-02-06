@@ -28,7 +28,8 @@ export const servicesMasterData = {
                     key: "",
                     display: "HSN Code*",
                     required: true, 
-                    fieldType: "string",
+                    fieldType: "input",
+                    inputType: "text",
                     placeholder: "HSN Code*"
                 },
             ]

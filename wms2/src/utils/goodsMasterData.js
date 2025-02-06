@@ -26,7 +26,8 @@ export const goodsMasterData = {
                     key: "",
                     display: "Package Size*",
                     required: true, 
-                    fieldType: "number",
+                    fieldType: "input",
+                    inputType: "number",
                 },
             ]
         },
@@ -118,7 +119,8 @@ export const goodsMasterData = {
                     key: "",
                     display: "Scheduled Type Code",
                     disabled: true, 
-                    fieldType: "string",
+                    fieldType: "input",
+                    inputType: "text",
                     placeholder: "Schedule"
                 },
             ]
@@ -130,21 +132,24 @@ export const goodsMasterData = {
                 {
                     key: "",
                     display: "Purchase Unit",
-                    fieldType: "number",
+                    fieldType: "input",
+                    inputType: "number",
                     placeholder: "Purchase Unit",
                     default: 1,
                 },
                 {
                     key: "",
                     display: "Transfer Unit",
-                    fieldType: "number",
+                    fieldType: "input",
+                    inputType: "number",
                     placeholder: "Purchase Unit",
                     default: 1,
                 },
                 {
                     key: "",
                     display: "Sales Unit",
-                    fieldType: "number",
+                    fieldType: "input",
+                    inputType: "number",
                     placeholder: "Purchase Unit",
                     default: 1,
                 },
@@ -164,7 +169,8 @@ export const goodsMasterData = {
                     key: "",
                     display: "HSN Code*",
                     required: true, 
-                    fieldType: "string",
+                    fieldType: "input",
+                    inputType: "text",
                     placeholder: "HSN Code*"
                 },
             ]
