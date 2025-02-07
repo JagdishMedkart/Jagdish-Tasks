@@ -1,6 +1,6 @@
 "use client";
 import { fetchProducts } from "@/features/products/productSlice";
-import { useParams, useRouter, usePathname } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductListing from "@/components/product-master/ProductListing";
@@ -9,14 +9,14 @@ import styles from "../page.module.css";
 import Header from "@/components/Header";
 import Image from "next/image";
 import { tablePageMeta } from "@/utils/tablePageMeta";
+import { fetchMasterData } from "@/features/addProduct/addProductSlice";
 
 const submodulePage = () => {
     let params = useParams();
-    const products = useSelector((state) => state.products.products);
+    const products = useSelector((state) => state.products);
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
     const [currentModule, setCurrentModule] = useState("");
-    const { current_path } = usePathname();
     const router = useRouter();
 
     console.log("params = ", params);
@@ -66,7 +66,7 @@ const submodulePage = () => {
                     </div>
                     <button className={styles.btn}
                         onClick={() => {
-                            router.push(`${submodule}-${module}/add-${submodule}`);
+                            router.push("/product-master/add-product");
                         }}
                     >{"+ Add"}</button>
                 </div>
@@ -75,9 +75,13 @@ const submodulePage = () => {
                 // <ProductListing onClickAction={(action,product)=>{
 
                 // }} />
-                <ProductListing onClickAction={(action,data)=>{
-                    if(action.fieldKey){
-                        router.push("/product/edit/"+data?.product_id)
+                <ProductListing token={token} productsData={products} onClickAction={(action,data)=>{
+                    if(action.fieldKey === "edit"){
+                        router.push("/product-master/edit-product/" + data?.product_id)
+                    }
+                    else if(action.fieldKey === "add") {
+                        dispatch(fetchMasterData(token));
+                        router.push("/product-master/add-product");
                     }
                     console.log("action,data",action,data);
                     

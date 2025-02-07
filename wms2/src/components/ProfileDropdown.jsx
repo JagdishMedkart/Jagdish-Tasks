@@ -22,7 +22,7 @@ export const ProfileDropdown = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/";
+        window.location.href = "/login";
     }
 
     useEffect(() => {

@@ -7,19 +7,29 @@ import ProductListing from "@/components/product-master/ProductListing";
 import Navbar from "@/components/Navbar";
 import styles from "../page.module.css";
 import Header from "@/components/Header";
-import Image from "next/image";
-import { tablePageMeta } from "@/utils/tablePageMeta";
 import { allMetaData } from "@/utils/allMetaData";
+import AddProduct from "@/components/product-master/AddProduct";
+import { productMasterData } from "@/utils/productMasterData";
 
 const MainPage = () => {
     const params = useParams();
     console.log("slug = ", params.slug);
+    const value = useState("Goods");
+    let masterData = useSelector((state) => state.addProduct)
+    const productDetails = useSelector((state) => state.productDetail)
+
+    useEffect(() => {
+        console.log("updated master data = ", masterData);
+        console.log("product details = ", productDetails);
+    }, [masterData, productDetails]);
 
     return (
         <div className={styles.mainDiv}>
             <Navbar />
             <Header />
-            {allMetaData[params.slug.join("/")]?.component ? allMetaData[params.slug.join("/")]?.component() : <h2>No such Page</h2>}
+            {allMetaData[params.slug.join("/")]?.component ? allMetaData[params.slug.join("/")]?.component() : null}
+            {params.slug.join("/") === "product-master/add-product" 
+            && (<AddProduct masterData={masterData} productMasterData={productMasterData} productDetails={productDetails} />)}
         </div>
     );
 };

@@ -69,31 +69,29 @@ export const productStructure = {
                     fieldKey: "edit",
                     fieldType: "button",
                     imageURL: "/edit.png",
-                    // src: `${baseProductURL}/edit-product/${product?.product_id}`,
+                    component: () => {
+                        return (
+                            <Image src={"/edit.png"}
+                            width={20}
+                            height={20}
+                            alt={"edit"} />
+                        )
+                    }
                 },
                 {
                     fieldKey: "add",
                     fieldType: "button",
                     imageURL: "/add.png",
-                    // src: `${baseProductURL}/add-product`,
+                    component: () => {
+                        return (
+                            <Image src={"/add.png"}
+                            width={20}
+                            height={20}
+                            alt={"add"} />
+                        )
+                    }
                 },
             ],
-            customField: (product) => {
-                return (
-                    <div className={styles.belowHeader}>
-                        <Image src={"/edit.png"}
-                            width={20}
-                            height={20}
-                            alt={"edit"}
-                            onClick={() => { router.push(`${baseProductURL}/edit-product/${product?.product_id}`) }} />
-                        <Image src={"/add.png"}
-                            width={20}
-                            height={20}
-                            alt={"add"}
-                            onClick={() => { router.push(`${baseProductURL}/add-product`) }} />
-                    </div>
-                )
-            }
         }
     ]
 };

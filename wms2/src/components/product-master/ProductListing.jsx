@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Image from "next/image";
 import styles from "../../styles/ProductListing.module.scss";
 import {
@@ -13,10 +13,9 @@ import {
     setMeta,
 } from "@/features/products/productSlice";
 import Filter from "./Filter";
-import { useRouter, usePathname, useParams } from "next/navigation";
 import { productStructure } from "@/utils/productStructure";
 
-const ProductListing = ({ title, Struct,onClickAction }) => {
+const ProductListing = ({ token, productsData, onClickAction }) => {
     const {
         products,
         isLoading,
@@ -27,14 +26,9 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
         search_key,
         filters,
         pageChanged,
-    } = useSelector((state) => state.products);
-    const token = useSelector((state) => state.auth.token);
-    // const [currentPage, setCurrentPage] = useState(meta.current_page);
+    } = productsData;
+    
     const dispatch = useDispatch();
-    const [isOpen, setIsOpen] = useState(false);
-    const router = useRouter();
-    let currentPath = useParams();
-    currentPath = Object.values(currentPath);
 
     const [openModule, setOpenModule] = useState(null);
     const [openSearch, setOpenSearch] = useState(null);
@@ -103,7 +97,6 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
         // console.log("page = ", currentPage);
         console.log("sort_by = ", sort_by);
         console.log("asc = ", asc);
-        console.log("current path = ", currentPath);
         dispatch(
             fetchProducts({
                 type: "pageChange",
@@ -141,13 +134,6 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
             dispatch(setMeta(newPage));
         }
     };
-    // if (isLoading) return (
-    //     <div className={styles.header}>
-    //         <div className={styles.headerContainer}>
-    //             <p>Loading Products...</p>
-    //         </div>
-    //     </div>
-    // );
 
     return (
         <div className={styles.mainListing}>
@@ -302,18 +288,27 @@ const ProductListing = ({ title, Struct,onClickAction }) => {
                                 {products.map((product, ind) => (
                                     <tr key={`${product.product_id}`}>
                                         {
-                                            productStructure?.headers.map((header) => {
+                                            productStructure?.headers.map((header, key) => {
                                                 return (
-                                                    <td key={`${header.key}-${product.product_id}`} className={`${styles.td}`}>
+                                                    <td key={`${product.product_id}-${ind}-${key}`} className={`${styles.td}`}>
                                                         {
-                                                            header?.actions?
+                                                            header?.actions ?
                                                                 header?.actions?.map((action) => {
-                                                                    return (
-                                                                        <button onClick={()=>{ onClickAction(action,product)}}>{action.fieldKey}</button>
-                                                                    )
+                                                                    switch (action?.fieldType) {
+                                                                        case "button":
+                                                                            return (
+                                                                                <button
+                                                                                    onClick={() => { onClickAction(action, product) }}>
+                                                                                    {action?.component ?
+                                                                                        action.component()
+                                                                                        :
+                                                                                        action.fieldKey}
+                                                                                </button>
+                                                                            )
+                                                                    }
                                                                 })
-                                                            :
-                                                            header?.customField ? header?.customField(product) : product[header.key]
+                                                                :
+                                                                header?.customField ? header?.customField(product) : product[header.key]
                                                         }
                                                     </td>
                                                 )
