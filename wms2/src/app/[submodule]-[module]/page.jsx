@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import Image from "next/image";
 import { tablePageMeta } from "@/utils/tablePageMeta";
 import { fetchMasterData } from "@/features/addProduct/addProductSlice";
+import { fetchProductDetails, setInitData } from "@/features/productDetails/productDetailSlice";
 
 const submodulePage = () => {
     let params = useParams();
@@ -66,21 +67,23 @@ const submodulePage = () => {
                     </div>
                     <button className={styles.btn}
                         onClick={() => {
+                            dispatch(fetchMasterData(token));
+                            dispatch(setInitData());
                             router.push("/product-master/add-product");
                         }}
                     >{"+ Add"}</button>
                 </div>
             </div>
             {currentModule === "ProductListing" ? (
-                // <ProductListing onClickAction={(action,product)=>{
-
-                // }} />
                 <ProductListing token={token} productsData={products} onClickAction={(action,data)=>{
                     if(action.fieldKey === "edit"){
-                        router.push("/product-master/edit-product/" + data?.product_id)
+                        dispatch(fetchMasterData(token));
+                        dispatch(fetchProductDetails({token, product_id: data?.product_id}));
+                        router.push("/product-master/edit-product/" + data?.product_id);
                     }
                     else if(action.fieldKey === "add") {
                         dispatch(fetchMasterData(token));
+                        dispatch(setInitData());
                         router.push("/product-master/add-product");
                     }
                     console.log("action,data",action,data);

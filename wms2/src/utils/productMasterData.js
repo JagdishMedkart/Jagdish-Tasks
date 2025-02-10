@@ -1,5 +1,4 @@
 export const productMasterData = {
-    title: "Add Product",
     Goods: {
         mainForm: [
             {
@@ -9,13 +8,15 @@ export const productMasterData = {
                 required: true,
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "product_name"
             },
             {
                 key: "product_type",
                 display: "Product Type*",
                 required: true,
                 fieldType: "dropdown",
-                default: "Goods"
+                default: "Goods",
+                valueMap: "product_type",
             },
             {
                 key: "ws_code",
@@ -24,6 +25,7 @@ export const productMasterData = {
                 disabled: true,
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "ws_code",
             },
             {
                 key: "product_code",
@@ -32,12 +34,14 @@ export const productMasterData = {
                 placeholder: "Product Code",
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "product_code",
             },
             {
-                key: "manufacturers",
+                key: "manufacturer",
                 display: "Manufacturer*",
                 required: true,
                 fieldType: "search",
+                valueMap: "manufacturer.name",
             },
             {
                 key: "mrp",
@@ -45,7 +49,9 @@ export const productMasterData = {
                 required: true,
                 fieldType: "input",
                 inputType: "number",
-                placeholder: "MRP*"
+                placeholder: "MRP*",
+                min: 1,
+                valueMap: "mrp"
             }
         ],
         headers: [
@@ -58,18 +64,21 @@ export const productMasterData = {
                         display: "Dosage Form*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "packaging_units.dosage_form"
                     },
                     {
                         key: "package_type",
                         display: "Package Type*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "packaging_units.package_type"
                     },
                     {
                         key: "uom",
                         display: "UOM*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "packaging_units.uom"
                     },
                     {
                         key: "",
@@ -77,7 +86,8 @@ export const productMasterData = {
                         required: true, 
                         fieldType: "input",
                         inputType: "number",
-                        placeholder: "Package Size*"
+                        placeholder: "Package Size*",
+                        valueMap: "packaging_units.package_size"
                     },
                 ]
             },
@@ -90,6 +100,7 @@ export const productMasterData = {
                         display: "Molecules*",
                         required: true, 
                         fieldType: "multiSearchDropdown",
+                        valueMap: "combination.molecules"
                     },
                 ]
             },
@@ -102,68 +113,85 @@ export const productMasterData = {
                         display: "Is Assured*",
                         required: true, 
                         fieldType: "dropdown",
-                        values: ["Yes", "No"]
+                        options: ["Yes", "No"],
+                        values: [true, false],
+                        valueMap: "is_assured"
                     },
                     {
                         key: "",
                         display: "Discontinued*",
                         disabled: true, 
                         fieldType: "dropdown",
-                        values: ["No"],
-                        default: "No"
+                        options: ["No"],
+                        values: [false],
+                        default: "No",
+                        valueMap: "is_discontinued"
                     },
                     {
                         key: "",
                         display: "Banned*",
                         required: true, 
                         fieldType: "dropdown",
-                        values: ["Yes", "No"]
+                        options: ["Yes", "No"],
+                        values: [true, false],
+                        valueMap: "is_banned"
                     },
                     {
                         key: "",
                         display: "Is Active*",
                         required: true, 
                         fieldType: "dropdown",
-                        values: ["Yes", "No"]
+                        options: ["Yes", "No"],
+                        values: [true, false],
+                        valueMap: "is_active"
                     },
                     {
                         key: "",
                         display: "Is Hidden From Alternate*",
                         required: true, 
                         fieldType: "dropdown",
-                        values: ["Yes", "No"]
+                        options: ["Yes", "No"],
+                        values: [true, false],
                     },
                     {
                         key: "",
                         display: "Rx Required.",
                         disabled: true, 
                         fieldType: "dropdown",
-                        values: ["Yes"],
-                        default: "Yes"
+                        options: ["Yes"],
+                        values: [true],
+                        default: "Yes",
+                        valueMap: "is_rx_required"
                     },
                     {
                         key: "",
                         display: "Can Sell Online",
                         disabled: true, 
                         fieldType: "dropdown",
-                        values: ["Yes"],
-                        default: "Yes"
+                        options: ["Yes"],
+                        values: [true],
+                        default: "Yes",
+                        valueMap: "can_sell_online"
                     },
                     {
                         key: "",
                         display: "Chronic",
                         disabled: true, 
                         fieldType: "dropdown",
-                        values: ["Yes"],
-                        default: "Yes"
+                        options: ["Yes"],
+                        values: [true],
+                        default: "Yes",
+                        valueMap: "is_chronic"
                     },
                     {
                         key: "",
                         display: "Refrigerated",
                         disabled: true, 
                         fieldType: "dropdown",
-                        values: ["Yes"],
-                        default: "Yes"
+                        options: ["Yes"],
+                        values: [true],
+                        default: "Yes",
+                        valueMap: "is_refrigerated"
                     },
                     {
                         key: "",
@@ -171,7 +199,8 @@ export const productMasterData = {
                         disabled: true, 
                         fieldType: "input",
                         inputType: "text",
-                        placeholder: "Schedule"
+                        placeholder: "Schedule",
+                        valueMap: "scheduled_type_code"
                     },
                 ]
             },
@@ -186,6 +215,7 @@ export const productMasterData = {
                         inputType: "number",
                         placeholder: "Purchase Unit",
                         default: 1,
+                        valueMap: "transaction_units.purchase_unit"
                     },
                     {
                         key: "",
@@ -194,6 +224,7 @@ export const productMasterData = {
                         inputType: "number",
                         placeholder: "Purchase Unit",
                         default: 1,
+                        valueMap: "transaction_units.transfer_unit"
                     },
                     {
                         key: "",
@@ -202,6 +233,7 @@ export const productMasterData = {
                         inputType: "number",
                         placeholder: "Purchase Unit",
                         default: 1,
+                        valueMap: "transaction_units.sales_unit"
                     },
                 ]
             },
@@ -214,6 +246,7 @@ export const productMasterData = {
                         display: "GST Type*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "taxes.gst_type"
                     },
                     {
                         key: "",
@@ -221,7 +254,8 @@ export const productMasterData = {
                         required: true, 
                         fieldType: "input",
                         inputType: "text",
-                        placeholder: "HSN Code*"
+                        placeholder: "HSN Code*",
+                        valueMap: "taxes.hsn_code"
                     },
                 ]
             },
@@ -234,6 +268,7 @@ export const productMasterData = {
                         display: "B2B Product type*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "sales_category.b2b_category"
                     },
                     {
                         key: "b2c-template",
@@ -241,18 +276,21 @@ export const productMasterData = {
                         required: true, 
                         fieldType: "dropdown",
                         default: "B2C Product type*",
+                        valueMap: "sales_category.b2b_category.category_name"
                     },
                     {
                         key: "sales_trend_category",
                         display: "Sales Trend Category*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "sales_category.sales_trend_category"
                     },
                     {
                         key: "product_return_type",
                         display: "Return Type*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "sales_category.return_type"
                     },
                 ]
             },
@@ -265,12 +303,14 @@ export const productMasterData = {
                         display: "Reporting Category",
                         required: false, 
                         fieldType: "dropdown",
+                        valueMap: "mis_reporting_category"
                     },
                     {
                         key: "mis_warehouse_category",
                         display: "WH Category",
                         required: false, 
                         fieldType: "dropdown",
+                        valueMap: "mis_warehouse_category"
                     },
                 ]
             }
@@ -285,13 +325,15 @@ export const productMasterData = {
                 required: true,
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "product_name"
             },
             {
                 key: "product_type",
                 display: "Product Type*",
                 required: true,
                 fieldType: "dropdown",
-                default: "Goods"
+                default: "Goods",
+                valueMap: "product_type"
             },
             {
                 key: "ws_code",
@@ -300,6 +342,7 @@ export const productMasterData = {
                 disabled: true,
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "ws_code"
             },
             {
                 key: "product_code",
@@ -307,6 +350,7 @@ export const productMasterData = {
                 disabled: true,
                 fieldType: "input",
                 inputType: "text",
+                valueMap: "product_code"
             },
         ],
         headers: [
@@ -319,8 +363,10 @@ export const productMasterData = {
                         display: "Is Active*",
                         required: true, 
                         fieldType: "dropdown",
-                        values: ["Yes", "No"],
-                        default:"Yes"
+                        options: ["Yes", "No"],
+                        values: [true, false],
+                        default:"Yes",
+                        valueMap: "is_active"
                     },
                 ]
             },
@@ -333,6 +379,7 @@ export const productMasterData = {
                         display: "GST Type*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap: "taxes.gst_type"
                     },
                     {
                         key: "",
@@ -340,7 +387,8 @@ export const productMasterData = {
                         required: true, 
                         fieldType: "input",
                         inputType: "text",
-                        placeholder: "HSN Code*"
+                        placeholder: "HSN Code*",
+                        valueMap: "taxes.hsn_code"
                     },
                 ]
             },
@@ -353,12 +401,14 @@ export const productMasterData = {
                         display: "Reporting Category",
                         required: false, 
                         fieldType: "dropdown",
+                        valueMap: "mis_reporting_category"
                     },
                     {
                         key: "mis_warehouse_category",
                         display: "WH Category",
                         required: false, 
                         fieldType: "dropdown",
+                        valueMap: "mis_warehouse_category"
                     },
                 ]
             }

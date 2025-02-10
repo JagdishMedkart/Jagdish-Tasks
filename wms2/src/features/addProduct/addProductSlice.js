@@ -14,6 +14,7 @@ const initialState = {
     product_return_details: [],
     mis_reporting_category: [],
     mis_warehouse_category: [],
+    manufacturer: {text: "", values: []},
 };
 
 export const addProductSliceReducer = createSlice({
@@ -37,12 +38,33 @@ export const addProductSliceReducer = createSlice({
             state.mis_reporting_category = action.payload.mis_reporting_category;
             state.mis_warehouse_category = action.payload.mis_warehouse_category;
         },
+        fetchManu: (state, action) => {
+            return {
+                ...state, 
+                manufacturer: { ...state.manufacturer, text: action?.payload?.text ? action.payload.text : "" },
+            }
+        },
+        setManufacturers: (state, action) => {
+            return {
+                ...state,
+                manufacturer: { ...state.manufacturer, values: action.payload }
+            };
+        },
+        setManufacturerText: (state, action) => {
+            return {
+                ...state,
+                manufacturer: { ...state.manufacturer, text: action.payload }
+            }
+        }
     },
 });
 
 export const
     {
         fetchMasterData, 
-        setMasterData
+        setMasterData,
+        fetchManu,
+        setManufacturers,
+        setManufacturerText
     } = addProductSliceReducer.actions;
 export const addProductReducer = addProductSliceReducer.reducer;

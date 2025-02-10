@@ -1,3 +1,10 @@
+$primary-color: rgb(85, 86, 166);
+$secondary-color: white;
+$hover-color: rgba(85, 86, 166, 0.2);
+$border-color: rgb(200, 200, 255);
+$shadow-color: rgba(0, 0, 0, 0.1);
+$clear-button-color: rgb(255, 50, 50);
+
 .mainForm {
     display: flex;
     flex-direction: column;
@@ -97,4 +104,184 @@
 .label {
     color: #202223;
     font-size: 14px;
+    text-align: right;
+}
+
+.saveBtnDiv {
+    display: flex;
+    justify-content: end;
+}
+
+.saveBtn {
+    color:rgb(85, 86, 166);
+    background-color: white;
+    padding: 10px 15px;
+    border: 1px solid rgb(85, 86, 166);
+    border-radius: 5px;
+    font-size: 16px;
+
+    &:hover {
+        color: white;
+        background-color: rgb(85, 86, 166);
+        cursor: pointer;
+    }
+}
+
+.module {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    .moduleHeader {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 5px rgba(138, 79, 255, 0.1);
+
+        &.active,
+        &:hover {
+            background-color: rgb(85, 86, 166);
+            color: white;
+
+            img {
+                filter: brightness(0) invert(1);
+            }
+
+            .span {
+                color: black;
+            }
+        }
+
+        span {
+            font-weight: 500;
+            color: black;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        img {
+            transition: all 0.1s ease-in-out;
+        }
+
+        &.selected {
+            background: $primary-color;
+            color: white;
+        }
+    }
+
+    .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 200;
+        padding: 10px 0;
+        margin-top: 10px;
+        border: 1px solid #e0e0e0;
+        animation: fadeIn 0.1s ease-in-out;
+    }
+
+    .dropdownItem,
+    .dropdownItem2 {
+        width: 100%;
+        text-align: left;
+        padding: 10px 15px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        white-space: nowrap;
+        overflow: hidden;
+        // max-width: 250px;
+
+        &:hover {
+            background-color: #f4f4f8;
+            color: rgb(85, 86, 166);
+        }
+
+        &.selectedItem {
+            background: $primary-color;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+    }
+
+    .dropdownItem2 {
+        padding: 5px 15px;
+    }
+}
+
+.activeFilter {
+    color: white;
+}
+
+.clearBtn {
+    background: white;
+    border: none;
+    cursor: pointer;
+    color: $primary-color;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+    padding: 0 10px;
+
+    &:hover {
+        color: black;
+    }
+}
+
+.filterContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.inputDiv {
+    display: flex;
+    // flex-wrap: wrap;
+    flex-direction: row;
+    width: 80%;
+    // background: rgba(85, 86, 166, 0.3);
+}
+
+.input {
+    border: none;
+    outline: none;
+    padding-left: 0.9rem;
+    background-color: transparent;
+    // width: 150px;
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    align-items: center;
+    width: 90%;
+    border: 1px solid transparent;
+    margin: 5px 5%;
+    padding: 0.5rem;
+    background-color: rgba(85, 86, 166, 0.1);
+
+    &:focus-within {
+        border: 1px solid black;
+    }
 }
