@@ -100,6 +100,24 @@ export const productDetailSliceReducer = createSlice({
             state.combination.molecules = action.payload;
         },
 
+        // addMolecule: (state, action) => {
+            // const { id, name, ...rest } = action.payload;
+
+            // const newMolecule = {
+            //     molecule_id: id,
+            //     molecule_name: name,
+            //     ...rest
+            // }
+
+        //     if (!state.combination.molecules.some(m => m.molecule_id === newMolecule.molecule_id)) {
+        //         state.combination.molecules.push(newMolecule);
+        //     }
+        // },
+        // removeMolecule: (state, action) => {
+        //     state.combination.molecules = state.combination.molecules.filter(
+        //         (molecule) => molecule.molecule_id !== action.payload
+        //     );
+        // }
         addMolecule: (state, action) => {
             const { id, name, ...rest } = action.payload;
 
@@ -108,15 +126,29 @@ export const productDetailSliceReducer = createSlice({
                 molecule_name: name,
                 ...rest
             }
-
+            // Ensure molecule_id is unique in the list
             if (!state.combination.molecules.some(m => m.molecule_id === newMolecule.molecule_id)) {
-                state.combination.molecules.push(newMolecule);
+                return {
+                    ...state,
+                    combination: {
+                        ...state.combination,
+                        molecules: [...state.combination.molecules, newMolecule],  // Avoid direct mutation
+                    }
+                };
             }
+            return state;
         },
+        
         removeMolecule: (state, action) => {
-            state.combination.molecules = state.combination.molecules.filter(
-                (molecule) => molecule.molecule_id !== action.payload
-            );
+            return {
+                ...state,
+                combination: {
+                    ...state.combination,
+                    molecules: state.combination.molecules.filter(
+                        molecule => molecule.molecule_id !== action.payload
+                    ),
+                }
+            };
         }
     },
 });

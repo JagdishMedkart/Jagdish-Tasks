@@ -19,9 +19,9 @@ const Table = ({ productStructure, products, onClickAction }) => {
                 {products.map((product, ind) => (
                     <tr key={`${product.product_id}`}>
                         {
-                            productStructure?.headers.map((header, key) => {
+                            productStructure?.headers.map((header, key2) => {
                                 return (
-                                    <td key={`${product.product_id}-${ind}-${key}`} className={`${styles.td}`}>
+                                    <td key={`${ind}-${key2}-${product?.product_id}`} className={`${styles.td}`}>
                                         {
                                             header?.actions ?
                                                 header?.actions?.map((action) => {

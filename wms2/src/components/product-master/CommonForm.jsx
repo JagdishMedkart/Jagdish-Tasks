@@ -86,7 +86,9 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
         setOpenModule(null);
     }
 
-    const handleMultiSelect = (molecule) => {
+    const handleMultiSelect = (e, molecule) => {
+        e.preventDefault();
+        e.stopPropagation();
         console.log("you want to add molecule", molecule);
         console.log("selected molecules = ", selectedMolecules);
         if (!selectedMolecules.some(m => m.molecule_id === molecule.molecule_id)) {
@@ -218,7 +220,7 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                                 {molecules?.values?.map((molecule) => (
                                     <button key={molecule.molecule_id}
                                         className={styles.dropdownItem2}
-                                        onClick={() => handleMultiSelect(molecule)}
+                                        onClick={(e) => handleMultiSelect(e, molecule)}
                                     >
                                         {molecule.molecule_name}
                                     </button>

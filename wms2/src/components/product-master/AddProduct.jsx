@@ -9,6 +9,7 @@ import { setSelected } from "@/features/productDetails/productDetailSlice";
 import { fetchB2C, fetchManu, fetchMolecules, setB2CText, setManufacturers, setManufacturerText, setMoleculesText } from "@/features/addProduct/addProductSlice";
 import apiClient from "@/axios";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 export const AddProduct = ({ masterData, productMasterData, handleDropdownChange, value, productDetails, title, token }) => {
     console.log("master data = ", masterData);
@@ -36,11 +37,11 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
         let value = e.target.value;
         value = value === "true" ? true : value === "false" ? false : value;
         const keys = field?.valueMap?.split(".");
-        console.log("handling input change ", e, field);
+        console.log("handling input change ", value, field);
         if (field.key === "product_type")
             dispatch(setProductDetails(e.target.value));
         else
-            dispatch(updateData2({ name: field.valueMap, value: e.target.value }));
+            dispatch(updateData2({ name: field.valueMap, value: value }));
     }
 
     const handleSelection = (ind) => {
@@ -68,8 +69,9 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
 
             console.log("Transformed Product Details: ", JSON.stringify(updatedProductDetails, null, 2));
 
+            let resp;
             if (title === "Edit Product") {
-                const resp = await apiClient.put(
+                resp = await apiClient.put(
                     `/api/v1/master/products/${updatedProductDetails.product_id}`,
                     updatedProductDetails,
                     {
@@ -79,11 +81,9 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                         }
                     }
                 );
-
-                console.log("PUT response = ", resp.data);
             }
             else if (title === "Add Product") {
-                const resp = await apiClient.post(
+                resp = await apiClient.post(
                     `/api/v1/master/products`,
                     updatedProductDetails,
                     {
@@ -93,10 +93,16 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                         }
                     }
                 );
-
-                console.log("PUT response = ", resp.data);
             }
-            router.push("/products-master");
+            if (resp.status === 200) {
+                toast.success(resp.data.message || "Success!", {
+                    duration: 1500,
+                });
+
+                setTimeout(() => {
+                    router.push("/products-master");
+                }, 1800);
+            }
         } catch (error) {
             console.error("Error updating product:", error.response?.status, error.response?.data || error.message);
         }
@@ -163,6 +169,7 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                 <div>
                     <div className={styles.saveBtnDiv}><button className={styles.saveBtn} onClick={handleSave}>SAVE</button></div>
                 </div>
+                <Toaster />
             </form>
         </div>
     );
