@@ -153,6 +153,7 @@ export const productMasterData = {
                         fieldType: "dropdown",
                         options: ["Yes", "No"],
                         values: [true, false],
+                        valueMap: "is_hidden_from_alternate_products"
                     },
                     {
                         key: "",
@@ -352,7 +353,8 @@ export const productMasterData = {
                 disabled: true,
                 fieldType: "input",
                 inputType: "text",
-                valueMap: "product_code"
+                valueMap: "product_code",
+                placeholder: "Product Code",
             },
         ],
         headers: [

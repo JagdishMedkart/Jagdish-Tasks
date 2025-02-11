@@ -32,8 +32,10 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
     }
 
     const handleChange = (e, field) => {
-        const value = e.target.value;
-        const keys = field?.valueMap.split(".");
+        console.log("you clicked on change with this", e, field);
+        let value = e.target.value;
+        value = value === "true" ? true : value === "false" ? false : value;
+        const keys = field?.valueMap?.split(".");
         console.log("handling input change ", e, field);
         if (field.key === "product_type")
             dispatch(setProductDetails(e.target.value));

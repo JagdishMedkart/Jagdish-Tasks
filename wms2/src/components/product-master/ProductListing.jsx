@@ -14,6 +14,8 @@ import {
 } from "@/features/products/productSlice";
 import Filter from "./Filter";
 import { productStructure } from "@/utils/productStructure";
+import Pagination from "./Pagination";
+import Table from "./Table";
 
 const ProductListing = ({ token, productsData, onClickAction }) => {
     const {
@@ -274,90 +276,8 @@ const ProductListing = ({ token, productsData, onClickAction }) => {
                 {openFilter === "filter" && <Filter />}
                 {!isLoading && (
                     <div className={styles.tableDiv}>
-                        <table className={styles.table}>
-                            <thead>
-                                <tr>
-                                    {productStructure.headers.map((header) => (
-                                        <th key={header.key} className={styles.th}>
-                                            {header.display}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {products.map((product, ind) => (
-                                    <tr key={`${product.product_id}`}>
-                                        {
-                                            productStructure?.headers.map((header, key) => {
-                                                return (
-                                                    <td key={`${product.product_id}-${ind}-${key}`} className={`${styles.td}`}>
-                                                        {
-                                                            header?.actions ?
-                                                                header?.actions?.map((action) => {
-                                                                    switch (action?.fieldType) {
-                                                                        case "button":
-                                                                            return (
-                                                                                <button
-                                                                                    onClick={() => { onClickAction(action, product) }}>
-                                                                                    {action?.component ?
-                                                                                        action.component()
-                                                                                        :
-                                                                                        action.fieldKey}
-                                                                                </button>
-                                                                            )
-                                                                    }
-                                                                })
-                                                                :
-                                                                header?.customField ? header?.customField(product) : product[header.key]
-                                                        }
-                                                    </td>
-                                                )
-                                            })
-                                        }
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className={styles.pagination}>
-                            <button
-                                className={styles.btn}
-                                onClick={() =>
-                                    handlePageChange(meta.current_page - 1)
-                                }
-                                disabled={meta.current_page === 1}
-                            >
-                                Previous
-                            </button>
-                            <input
-                                className={styles.input2}
-                                type="text"
-                                value={meta.current_page}
-                                onChange={(e) => {
-                                    // if (e.target.value.includes(" ")) {
-                                    //     e.target.value =
-                                    //         e.target.value.replace(
-                                    //             /\s/g,
-                                    //             ""
-                                    //         );
-                                    // }
-                                    handlePageChange(
-                                        Number(e.target.value.trim())
-                                    );
-                                }}
-                            />
-                            <span className={styles.spanLast}>
-                                of {meta.last_page}
-                            </span>
-                            <button
-                                className={styles.btn}
-                                onClick={() =>
-                                    handlePageChange(meta.current_page + 1)
-                                }
-                                disabled={meta.current_page === meta.last_page}
-                            >
-                                Next
-                            </button>
-                        </div>
+                        <Table onClickAction={onClickAction} productStructure={productStructure} products={products} />
+                        <Pagination meta={meta} handlePageChange={handlePageChange} />
                     </div >
                 )}
             </div >

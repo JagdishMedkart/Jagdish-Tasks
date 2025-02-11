@@ -38,17 +38,17 @@ export const productDetailSliceReducer = createSlice({
             }
         },
         updateData2: (state, action) => {
-            const keys = action.payload.name.split(".");
+            const keys = action.payload?.name?.split(".");
             let temp = state;
 
-            for (let i = 0; i < keys.length - 1; i++) {
+            for (let i = 0; i < keys?.length - 1; i++) {
                 if (!temp[keys[i]] || typeof temp[keys[i]] !== "object") {
                     temp[keys[i]] = {};
                 }
                 temp = temp[keys[i]];
             }
             const value = isNaN(action.payload.value) ? action.payload.value : Number(action.payload.value);
-            temp[keys[keys.length - 1]] = value;
+            temp[keys[keys?.length - 1]] = value;
         },
         fetchProductDetails: (state, action) => {
 
