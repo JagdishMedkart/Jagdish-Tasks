@@ -6,10 +6,19 @@ const initialState = {
     is_rx_required: true,
     is_chronic: true,
     is_refrigerated: false,
+    is_hidden_from_alternate_products: true,
+    is_discontinued: false,
+    is_active: true,
+    is_banned: false,
+    is_assured: true,
     manufacturer: {
         id: 0,
         name: ""
     },
+    sales_category: { b2c_category: "" },
+    combination: {
+        molecules: []
+    }
 };
 
 export const productDetailSliceReducer = createSlice({
@@ -38,8 +47,8 @@ export const productDetailSliceReducer = createSlice({
                 }
                 temp = temp[keys[i]];
             }
-
-            temp[keys[keys.length - 1]] = action.payload.value;
+            const value = isNaN(action.payload.value) ? action.payload.value : Number(action.payload.value);
+            temp[keys[keys.length - 1]] = value;
         },
         fetchProductDetails: (state, action) => {
 
@@ -57,13 +66,57 @@ export const productDetailSliceReducer = createSlice({
                 is_rx_required: true,
                 is_chronic: true,
                 is_refrigerated: false,
+                is_hidden_from_alternate_products: true,
+                is_discontinued: false,
+                is_banned: false,
+                is_assured: true,
+                is_active: true,
+                manufacturer: {
+                    id: 0,
+                    name: ""
+                },
+                sales_category: { b2c_category: "" },
+                combination: {
+                    molecules: []
+                }
             }
         },
         setManu: (state, action) => {
             return {
                 ...state,
-                manufacturer: {id: action.payload.id, name: action.payload.name}
+                manufacturer: { id: action.payload.id, name: action.payload.name }
             }
+        },
+        setB2CFinal: (state, action) => {
+            return {
+                ...state,
+                sales_category: {
+                    ...state.sales_category,
+                    b2c_category: action.payload.id
+                }
+            }
+        },
+        setMolecules: (state, action) => {
+            state.combination.molecules = action.payload;
+        },
+
+        addMolecule: (state, action) => {
+            const { id, name, ...rest } = action.payload;
+
+            const newMolecule = {
+                molecule_id: id,
+                molecule_name: name,
+                ...rest
+            }
+
+            if (!state.combination.molecules.some(m => m.molecule_id === newMolecule.molecule_id)) {
+                state.combination.molecules.push(newMolecule);
+            }
+        },
+        removeMolecule: (state, action) => {
+            state.combination.molecules = state.combination.molecules.filter(
+                (molecule) => molecule.molecule_id !== action.payload
+            );
         }
     },
 });
@@ -77,6 +130,10 @@ export const
         setFullDetails,
         updateData2,
         setInitData,
-        setManu
+        setManu,
+        setB2CFinal,
+        setMolecules,
+        addMolecule,
+        removeMolecule
     } = productDetailSliceReducer.actions;
 export const productDetailReducer = productDetailSliceReducer.reducer;

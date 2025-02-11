@@ -6,17 +6,29 @@ import { CommonForm } from "./CommonForm";
 import { setProductDetails, updateData, updateData2 } from "@/features/productDetails/productDetailSlice";
 import styles from "../../styles/AddProduct.module.scss";
 import { setSelected } from "@/features/productDetails/productDetailSlice";
-import { fetchManu, setManufacturers, setManufacturerText } from "@/features/addProduct/addProductSlice";
+import { fetchB2C, fetchManu, fetchMolecules, setB2CText, setManufacturers, setManufacturerText, setMoleculesText } from "@/features/addProduct/addProductSlice";
+import apiClient from "@/axios";
+import { useRouter } from "next/navigation";
 
 export const AddProduct = ({ masterData, productMasterData, handleDropdownChange, value, productDetails, title, token }) => {
     console.log("master data = ", masterData);
     console.log("value = ", value);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const handleSearch = (e, field) => {
-        if(field?.key === "manufacturer")
-        dispatch(setManufacturerText(e));
-        dispatch(fetchManu({ token, text: e }));
+        if (field?.key === "manufacturer") {
+            dispatch(setManufacturerText(e));
+            dispatch(fetchManu({ token, text: e }));
+        }
+        else if (field?.key === "b2c-template") {
+            dispatch(setB2CText(e));
+            dispatch(fetchB2C({ token, text: e }));
+        }
+        else if (field?.key === "molecules") {
+            dispatch(setMoleculesText(e));
+            dispatch(fetchMolecules({ token, text: e }));
+        }
     }
 
     const handleChange = (e, field) => {
@@ -33,9 +45,61 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
         dispatch(setSelected(ind));
     }
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-    }
+        try {
+            console.log("Before Transforming: ", JSON.stringify(productDetails, null, 2));
+
+            let updatedProductDetails = JSON.parse(JSON.stringify(productDetails));
+
+            if (updatedProductDetails.combination?.molecules) {
+                updatedProductDetails.combination.molecules = updatedProductDetails.combination.molecules.map(molecule =>
+                    typeof molecule === "number" ? molecule : molecule.molecule_id
+                );
+            }
+
+            if (updatedProductDetails.sales_category?.b2c_category?.id) {
+                updatedProductDetails.sales_category.b2c_category = updatedProductDetails.sales_category.b2c_category.id;
+            }
+
+            delete updatedProductDetails.alternate_product;
+
+            console.log("Transformed Product Details: ", JSON.stringify(updatedProductDetails, null, 2));
+
+            if (title === "Edit Product") {
+                const resp = await apiClient.put(
+                    `/api/v1/master/products/${updatedProductDetails.product_id}`,
+                    updatedProductDetails,
+                    {
+                        headers: {
+                            Authorization: `${token}`,
+                            Location: "1"
+                        }
+                    }
+                );
+
+                console.log("PUT response = ", resp.data);
+            }
+            else if (title === "Add Product") {
+                const resp = await apiClient.post(
+                    `/api/v1/master/products`,
+                    updatedProductDetails,
+                    {
+                        headers: {
+                            Authorization: `${token}`,
+                            Location: "1"
+                        }
+                    }
+                );
+
+                console.log("PUT response = ", resp.data);
+            }
+            router.push("/products-master");
+        } catch (error) {
+            console.error("Error updating product:", error.response?.status, error.response?.data || error.message);
+        }
+    };
+
 
     useEffect(() => {
 
@@ -50,7 +114,7 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                         productMasterData[productDetails?.product_type]?.mainForm.map((field, ind) => {
                             console.log("field key = ", masterData[field?.key]);
                             return (
-                                <div className={styles.field}>
+                                <div key={ind} className={styles.field}>
                                     <div className={styles.labelDiv}><label className={styles.label}>{field.display}</label></div>
                                     <CommonForm
                                         field={field}
@@ -87,7 +151,7 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                                         handleChange={handleChange}
                                         productDetails={productDetails}
                                         handleSearch={handleSearch}
-                                        token = {token}
+                                        token={token}
                                     />
                                 </div>
                             );
@@ -95,7 +159,7 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                     }
                 </div>
                 <div>
-                    <div className={styles.saveBtnDiv}><button className={styles.saveBtn} onClick={(e) => handleSave(e)}>SAVE</button></div>
+                    <div className={styles.saveBtnDiv}><button className={styles.saveBtn} onClick={handleSave}>SAVE</button></div>
                 </div>
             </form>
         </div>

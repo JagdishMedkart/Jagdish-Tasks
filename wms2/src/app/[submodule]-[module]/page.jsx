@@ -84,6 +84,7 @@ const submodulePage = () => {
                     else if(action.fieldKey === "add") {
                         dispatch(fetchMasterData(token));
                         dispatch(setInitData());
+                        dispatch(fetchProductDetails({token, product_id: data?.product_id}));
                         router.push("/product-master/add-product");
                     }
                     console.log("action,data",action,data);

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: "https://i-stage.mkwms.dev",
-  timeout: 5000,
+  // timeout: 5000,
 });
 
 // Request Interceptor

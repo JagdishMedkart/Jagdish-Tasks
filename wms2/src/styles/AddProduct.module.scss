@@ -285,3 +285,33 @@ $clear-button-color: rgb(255, 50, 50);
         border: 1px solid black;
     }
 }
+
+.multiSelectContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selectedTagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.selectedTag {
+    background: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.removeBtn {
+    background: none;
+    border: none;
+    color: black;
+    margin-left: 5px;
+    font-weight: 600;
+    cursor: pointer;
+}

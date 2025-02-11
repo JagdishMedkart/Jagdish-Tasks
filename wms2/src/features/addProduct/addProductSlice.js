@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react";
 
 const initialState = {
     product_type: [],
@@ -14,7 +13,10 @@ const initialState = {
     product_return_details: [],
     mis_reporting_category: [],
     mis_warehouse_category: [],
-    manufacturer: {text: "", values: []},
+    manufacturer: { text: "", values: [] },
+    b2c: { text: "", values: [] },
+    selectedB2C: "",
+    molecules: { text: "", selected: [], values: [] }
 };
 
 export const addProductSliceReducer = createSlice({
@@ -40,7 +42,7 @@ export const addProductSliceReducer = createSlice({
         },
         fetchManu: (state, action) => {
             return {
-                ...state, 
+                ...state,
                 manufacturer: { ...state.manufacturer, text: action?.payload?.text ? action.payload.text : "" },
             }
         },
@@ -55,16 +57,65 @@ export const addProductSliceReducer = createSlice({
                 ...state,
                 manufacturer: { ...state.manufacturer, text: action.payload }
             }
-        }
+        },
+        fetchB2C: (state, action) => {
+            return {
+                ...state,
+                b2c: { ...state.b2c, text: action?.payload?.text ? action.payload.text : "" },
+            }
+        },
+        setB2C: (state, action) => {
+            return {
+                ...state,
+                b2c: { ...state.b2c, values: action.payload }
+            };
+        },
+        setB2CText: (state, action) => {
+            return {
+                ...state,
+                b2c: { ...state.b2c, text: action.payload }
+            }
+        },
+        setSelectedB2C: (state, action) => {
+            return {
+                ...state,
+                selectedB2C: action.payload
+            }
+        },
+        fetchMolecules: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, text: action?.payload?.text ? action.payload.text : "" },
+            }
+        },
+        setMolecules: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, values: action.payload }
+            };
+        },
+        setMoleculesText: (state, action) => {
+            return {
+                ...state,
+                molecules: { ...state.molecules, text: action.payload }
+            }
+        },
     },
 });
 
 export const
     {
-        fetchMasterData, 
+        fetchMasterData,
         setMasterData,
         fetchManu,
         setManufacturers,
-        setManufacturerText
+        setManufacturerText,
+        fetchB2C,
+        setB2C,
+        setB2CText,
+        setSelectedB2C,
+        fetchMolecules,
+        setMolecules,
+        setMoleculesText
     } = addProductSliceReducer.actions;
 export const addProductReducer = addProductSliceReducer.reducer;

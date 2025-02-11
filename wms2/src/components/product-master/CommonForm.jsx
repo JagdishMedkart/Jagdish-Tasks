@@ -2,8 +2,9 @@ import React from "react";
 import styles from "../../styles/AddProduct.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { fetchManu } from "@/features/addProduct/addProductSlice";
-import { setManu, updateData2 } from "@/features/productDetails/productDetailSlice";
+import { fetchB2C, fetchManu, setSelectedB2C } from "@/features/addProduct/addProductSlice";
+import { setB2CFinal, setManu, updateData2 } from "@/features/productDetails/productDetailSlice";
+import { addMolecule, removeMolecule } from "@/features/productDetails/productDetailSlice";
 
 export const CommonForm = ({ field, masterData, handleChange, productDetails, handleSearch, token }) => {
     const dispatch = useDispatch();
@@ -16,8 +17,11 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
     };
     const [openModule, setOpenModule] = useState(null);
     const manufacturer = useSelector((state) => state.addProduct.manufacturer);
+    const { b2c, selectedB2C, molecules } = useSelector((state) => state.addProduct);
+    const selectedMolecules = useSelector((state) => state.productDetail?.combination?.molecules || []);
     console.log("field value map = ", field?.valueMap);
     console.log("NESTING = ", getNestedValue(productDetails, field?.valueMap));
+    console.log("selected molecules = ", selectedMolecules);
 
     const handleModuleToggle = (moduleName) => {
         if (openModule === null && moduleName === "manufacturer") {
@@ -43,6 +47,29 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                 }
             }
         }
+        else if (openModule === null && moduleName === "b2c-template") {
+            console.log("this is the goated one!");
+
+            if (b2c.values.length === 0) {
+                if (b2c.text !== "") {
+                    dispatch(
+                        fetchB2C({
+                            token: token,
+                        })
+                    );
+                    console.log("updated b2c = ", b2c);
+                }
+                else {
+                    dispatch(
+                        fetchB2C({
+                            token: token,
+                            text: b2c.text,
+                        })
+                    );
+                    console.log("updated b2c = ", b2c);
+                }
+            }
+        }
         console.log("module name = ", moduleName);
         setOpenModule(openModule === moduleName ? null : moduleName);
     };
@@ -50,10 +77,28 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
     const handleSpecialFilter = (name, id) => {
         console.log("name = ", name);
         console.log("id = ", id);
-        dispatch(setManu({ id: id, name: name }));
-        // dispatch(updateData2({name: field.valueMap, value: name}));
+        if (field?.key === "manufacturer")
+            dispatch(setManu({ id: id, name: name }));
+        else if (field?.key === "b2c-template") {
+            dispatch(setB2CFinal({ id: id, name: name }));
+            dispatch(setSelectedB2C(name));
+        }
         setOpenModule(null);
     }
+
+    const handleMultiSelect = (molecule) => {
+        console.log("you want to add molecule", molecule);
+        console.log("selected molecules = ", selectedMolecules);
+        if (!selectedMolecules.some(m => m.molecule_id === molecule.molecule_id)) {
+            dispatch(addMolecule(molecule));
+        }
+    };
+
+    const handleRemoveItem = (e, moleculeId) => {
+        console.log("you want to remove molecule", moleculeId);
+        e.stopPropagation();
+        dispatch(removeMolecule(moleculeId));
+    };
 
     useEffect(() => {
         console.log("Updated Manufacturer List:", manufacturer.values);
@@ -96,26 +141,24 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                     <div className={styles.module}>
                         <div
                             className={`${styles.moduleHeader}`}
-                            onClick={() => handleModuleToggle("manufacturer")}
+                            onClick={() => handleModuleToggle(field?.key)}
                         >
                             <div className={styles.filterContainer}>
                                 <span className={styles.span}>
-                                    (
                                     <span className={styles.activeFilter}>
-                                        {getNestedValue(productDetails, field?.valueMap) || ""}
+                                        {field?.key === "b2c-template" ? selectedB2C : getNestedValue(productDetails, field?.valueMap) || ""}
                                     </span>
-                                    )
                                 </span>
                             </div>
                         </div>
-                        {openModule === "manufacturer" && (
+                        {openModule === field?.key && (
                             <div className={styles.dropdown}>
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputDiv}>
                                         <input
                                             className={styles.input}
                                             type="text"
-                                            value={field?.key === "manufacturer" ? manufacturer.text : ""}
+                                            value={field?.key === "manufacturer" ? manufacturer.text : field?.key === "b2c-template" ? b2c.text : ""}
                                             placeholder="Search..."
                                             onChange={(e) => {
                                                 handleSearch(e.target.value.trim(), field);
@@ -123,13 +166,13 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                                         />
                                     </div>
                                 </div>
-                                {openModule === "manufacturer" &&
-                                    (manufacturer?.values)?.map((value, key) => (
+                                {openModule === field?.key &&
+                                    (field?.key === "manufacturer" ? manufacturer?.values : b2c?.values)?.map((value, key) => (
                                         <button key={key}
                                             className={`${styles.dropdownItem2}`}
-                                            onClick={() => handleSpecialFilter(value.name, value.id)}
+                                            onClick={() => handleSpecialFilter(value[field?.valueName], value.id)}
                                         >
-                                            {value.name}
+                                            {value[field?.valueName]}
                                         </button>
                                     ))
                                 }
@@ -138,6 +181,52 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                         }
                     </div>
                 </>
+            )
+        case "multiSearchDropdown":
+            return (
+                <div className={styles.multiSelectContainer}>
+                    {/* Show Selected Items as Tags */}
+                    <div className={styles.selectedTagsContainer}>
+                        {selectedMolecules.map((molecule) => (
+                            <span key={molecule.molecule_id} className={styles.selectedTag}>
+                                {molecule.molecule_name}
+                                <button className={styles.removeBtn} onClick={(e) => handleRemoveItem(e, molecule.molecule_id)}>
+                                    X
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+
+                    {/* Search Input and Dropdown */}
+                    <div className={styles.module}>
+                        <div className={styles.moduleHeader} onClick={() => handleModuleToggle(field?.key)}>
+                            <div className={styles.filterContainer}>
+                                <span className={styles.placeholderText}>
+                                    {selectedMolecules.length === 0 ? "Search molecules..." : ""}
+                                </span>
+                            </div>
+                        </div>
+
+                        {openModule === field?.key && (
+                            <div className={styles.dropdown}>
+                                <input
+                                    className={styles.input}
+                                    type="text"
+                                    placeholder="Search..."
+                                    onChange={(e) => handleSearch(e.target.value.trim(), field)}
+                                />
+                                {molecules?.values?.map((molecule) => (
+                                    <button key={molecule.molecule_id}
+                                        className={styles.dropdownItem2}
+                                        onClick={() => handleMultiSelect(molecule)}
+                                    >
+                                        {molecule.molecule_name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
             )
         default:
             return null;

@@ -42,6 +42,7 @@ export const productMasterData = {
                 required: true,
                 fieldType: "search",
                 valueMap: "manufacturer.name",
+                valueName: "name",
             },
             {
                 key: "mrp",
@@ -146,7 +147,7 @@ export const productMasterData = {
                         valueMap: "is_active"
                     },
                     {
-                        key: "",
+                        key: "is_hidden_from_alternate_products",
                         display: "Is Hidden From Alternate*",
                         required: true, 
                         fieldType: "dropdown",
@@ -274,9 +275,10 @@ export const productMasterData = {
                         key: "b2c-template",
                         display: "B2C Product type*",
                         required: true, 
-                        fieldType: "dropdown",
+                        fieldType: "search",
                         default: "B2C Product type*",
-                        valueMap: "sales_category.b2b_category.category_name"
+                        valueMap: "sales_category.b2c_category",
+                        valueName: "category_name"
                     },
                     {
                         key: "sales_trend_category",

@@ -10,6 +10,8 @@ import {
     setShowPassword,
 } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 export const Auth = () => {
     const dispatch = useDispatch();
@@ -52,6 +54,12 @@ export const Auth = () => {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleSubmit(e);
+        }
+    };
+
     React.useEffect(() => {
         if (token !== "") {
             router.push("/dashboard");
@@ -91,6 +99,7 @@ export const Auth = () => {
                                             email: "",
                                         }));
                                     }}
+                                    onKeyDown={handleKeyPress}
                                 />
                             </div>
                         </div>
@@ -120,6 +129,7 @@ export const Auth = () => {
                                             password: "",
                                         }));
                                     }}
+                                    onKeyDown={handleKeyPress}
                                 />
                                 <div
                                     className={styles.passwordEye}
