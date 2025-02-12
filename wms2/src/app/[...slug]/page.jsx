@@ -1,9 +1,7 @@
 "use client";
-import { fetchProducts } from "@/features/products/productSlice";
-import { useParams, useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import ProductListing from "@/components/product-master/ProductListing";
+import { useSelector } from "react-redux";
 import Navbar from "@/components/Navbar";
 import styles from "../page.module.css";
 import Header from "@/components/Header";

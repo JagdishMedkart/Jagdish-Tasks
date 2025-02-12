@@ -10,8 +10,6 @@ import {
     setShowPassword,
 } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
 
 export const Auth = () => {
     const dispatch = useDispatch();
