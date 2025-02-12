@@ -70,7 +70,7 @@ $clear-button-color: rgb(255, 50, 50);
 }
 
 .input {
-    padding: 5px;
+    padding: 10px;
     width: 40%;
     border: 1px solid #e9ecef;
     color: #202223;
@@ -83,7 +83,7 @@ $clear-button-color: rgb(255, 50, 50);
 }
 
 .select {
-    padding: 5px;
+    padding: 10px;
     width: 40%;
     border: 1px solid #e9ecef;
     color: #202223;
@@ -314,4 +314,46 @@ $clear-button-color: rgb(255, 50, 50);
     margin-left: 5px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.errorHeader {
+    color: red;
+}
+
+.errorInput {
+    border: 1px solid red;
+    background: #fff4f4;
+    position: relative;
+}
+
+.inputContainer {
+    display: flex;
+    align-items: center;
+}
+
+.errorTooltip {
+    color: red;
+    font-size: 14px;
+    margin-left: 8px;
+    cursor: pointer;
+    position: relative;
+}
+
+.errorTooltip::after {
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    background-color: #ff5555;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    display: none;
+    white-space: nowrap;
+}
+
+.errorTooltip:hover::after {
+    display: block;
 }

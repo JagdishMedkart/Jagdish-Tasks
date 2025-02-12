@@ -1,21 +1,48 @@
 "use client";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import "@/styles/Dashboard.module.scss";
 import { CommonForm } from "./CommonForm";
-import { setProductDetails, updateData, updateData2 } from "@/features/productDetails/productDetailSlice";
+import { setProductDetails, updateData2 } from "@/features/productDetails/productDetailSlice";
 import styles from "../../styles/AddProduct.module.scss";
 import { setSelected } from "@/features/productDetails/productDetailSlice";
-import { fetchB2C, fetchManu, fetchMolecules, setB2CText, setManufacturers, setManufacturerText, setMoleculesText } from "@/features/addProduct/addProductSlice";
+import { fetchB2C, fetchManu, fetchMolecules, setSelectedB2C, setB2CText, setManufacturerText, setMoleculesText } from "@/features/addProduct/addProductSlice";
 import apiClient from "@/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import { setB2CFinal, setManu } from "@/features/productDetails/productDetailSlice";
 
-export const AddProduct = ({ masterData, productMasterData, handleDropdownChange, value, productDetails, title, token }) => {
+export const AddProduct = ({ masterData, productMasterData, value, productDetails, title, token }) => {
     console.log("master data = ", masterData);
     console.log("value = ", value);
     const dispatch = useDispatch();
     const router = useRouter();
+    const [errors, setErrors] = useState({});
+
+    const validateFields = () => {
+        let newErrors = {};
+
+        productMasterData[productDetails?.product_type]?.mainForm?.forEach((field) => {
+            const value = field.valueMap.split('.').reduce((acc, key) => acc?.[key], productDetails);
+            console.warn("value for ", field?.valueMap, " is ", value);
+            if (field?.required && (!value || value === "")) {
+                newErrors[field.valueMap] = `${field.display} is required`;
+            }
+        });
+
+        productMasterData[productDetails?.product_type]?.headers?.forEach((header) => {
+            header.fields.forEach((field) => {
+                const value = field.valueMap.split('.').reduce((acc, key) => acc?.[key], productDetails);
+                console.warn("value for ", field?.valueMap, " is ", value);
+                if (field.required && (!value || value === "")) {
+                    newErrors[field.valueMap] = `${field.display} is required`;
+                }
+            });
+        });
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleSearch = (e, field) => {
         if (field?.key === "manufacturer") {
@@ -32,16 +59,42 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
         }
     }
 
+    const handleSpecialFilter = (field, name, id) => {
+        console.log("name = ", name);
+        console.log("id = ", id);
+        if (field?.key === "manufacturer")
+            dispatch(setManu({ id: id, name: name }));
+        else if (field?.key === "b2c-template") {
+            dispatch(setB2CFinal({ id: id, name: name }));
+            dispatch(setSelectedB2C(name));
+        }
+        setErrors((prevErrors) => {
+            const newErrors = { ...prevErrors };
+            delete newErrors[field.valueMap];
+            return newErrors;
+        });
+        console.warn("errors now = ", errors);
+    }
+
     const handleChange = (e, field) => {
         console.log("you clicked on change with this", e, field);
         let value = e.target.value;
         value = value === "true" ? true : value === "false" ? false : value;
         const keys = field?.valueMap?.split(".");
+        console.warn("you are trying to change ", value);
         console.log("handling input change ", value, field);
         if (field.key === "product_type")
             dispatch(setProductDetails(e.target.value));
         else
             dispatch(updateData2({ name: field.valueMap, value: value }));
+        setErrors((prevErrors) => {
+            const newErrors = { ...prevErrors };
+            if (value && value !== "") {
+                delete newErrors[field.valueMap];
+            }
+            return newErrors;
+        });
+        console.warn("errors now = ", errors);
     }
 
     const handleSelection = (ind) => {
@@ -50,6 +103,10 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
 
     const handleSave = async (e) => {
         e.preventDefault();
+        if (!validateFields()) {
+            toast.error("Please fill all required fields before submitting.");
+            return;
+        }
         try {
             console.log("Before Transforming: ", JSON.stringify(productDetails, null, 2));
 
@@ -94,6 +151,7 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                     }
                 );
             }
+            console.warn("Response = ", resp);
             if (resp.status === 200) {
                 toast.success(resp.data.message || "Success!", {
                     duration: 1500,
@@ -103,8 +161,12 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                     router.push("/products-master");
                 }, 1800);
             }
+            else {
+                toast.error(`Error ${resp.status}: ${resp.data.message}`, { duration: 2000 });
+            }
         } catch (error) {
-            console.error("Error updating product:", error.response?.status, error.response?.data || error.message);
+            console.warn(error);
+            toast.error(`Error ${error.response?.status}: ${error.response?.data?.message || error.message}`, { duration: 2000 });
         }
     };
 
@@ -122,8 +184,10 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                         productMasterData[productDetails?.product_type]?.mainForm.map((field, ind) => {
                             console.log("field key = ", masterData[field?.key]);
                             return (
-                                <div key={ind} className={styles.field}>
-                                    <div className={styles.labelDiv}><label className={styles.label}>{field.display}</label></div>
+                                <div key={ind} className={`${styles.field} ${errors[field.valueMap] ? styles.errorField : ""}`}>
+                                    <div className={styles.labelDiv}>
+                                        <label className={styles.label}>{field.display}</label>
+                                    </div>
                                     <CommonForm
                                         field={field}
                                         masterData={masterData}
@@ -131,6 +195,8 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                                         productDetails={productDetails}
                                         handleSearch={handleSearch}
                                         token={token}
+                                        error={errors[field.valueMap]}
+                                        handleSpecialFilter={handleSpecialFilter}
                                     />
                                 </div>
                             );
@@ -141,7 +207,10 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                     <ul className={styles.ul}>
                         {
                             productMasterData?.[productDetails?.product_type]?.headers?.map((header, ind) => (
-                                <li key={ind} onClick={() => handleSelection(ind)} className={`${styles.li} ${ind === productDetails?.selected ? styles.selected : ""}`}>{header?.title}</li>
+                                <li key={ind} onClick={() => handleSelection(ind)}
+                                    className={`${styles.li} ${ind === productDetails?.selected ? styles.selected : ""} ${header.fields.some(field => errors[field.valueMap]) ? styles.errorHeader : ""}`}>
+                                    {header?.title}
+                                </li>
                             ))
                         }
                     </ul>
@@ -151,8 +220,10 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                         productMasterData?.[productDetails?.product_type]?.headers[productDetails?.selected]?.fields.map((field, key) => {
                             console.log("field key = ", masterData[field?.key]);
                             return (
-                                <div className={styles.field}>
-                                    <div className={styles.labelDiv}><label className={styles.label}>{field.display}</label></div>
+                                <div className={`${styles.field} ${errors[field.valueMap] ? styles.errorField : ""}`}>
+                                    <div className={styles.labelDiv}>
+                                        <label className={styles.label}>{field.display}</label>
+                                    </div>
                                     <CommonForm
                                         field={field}
                                         masterData={masterData}
@@ -160,6 +231,8 @@ export const AddProduct = ({ masterData, productMasterData, handleDropdownChange
                                         productDetails={productDetails}
                                         handleSearch={handleSearch}
                                         token={token}
+                                        error={errors[field.valueMap]}
+                                        handleSpecialFilter={handleSpecialFilter}
                                     />
                                 </div>
                             );

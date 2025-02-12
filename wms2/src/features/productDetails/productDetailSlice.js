@@ -47,8 +47,8 @@ export const productDetailSliceReducer = createSlice({
                 }
                 temp = temp[keys[i]];
             }
-            const value = isNaN(action.payload.value) ? action.payload.value : Number(action.payload.value);
-            temp[keys[keys?.length - 1]] = value;
+            // const value = isNaN(action.payload.value) ? action.payload.value : Number(action.payload.value);
+            temp[keys[keys?.length - 1]] = action.payload?.value;
         },
         fetchProductDetails: (state, action) => {
 

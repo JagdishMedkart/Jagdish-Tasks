@@ -3,10 +3,9 @@ import styles from "../../styles/AddProduct.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { fetchB2C, fetchManu, setSelectedB2C } from "@/features/addProduct/addProductSlice";
-import { setB2CFinal, setManu, updateData2 } from "@/features/productDetails/productDetailSlice";
 import { addMolecule, removeMolecule } from "@/features/productDetails/productDetailSlice";
 
-export const CommonForm = ({ field, masterData, handleChange, productDetails, handleSearch, token }) => {
+export const CommonForm = ({ field, masterData, handleChange, productDetails, handleSearch, token, error, handleSpecialFilter }) => {
     const dispatch = useDispatch();
     console.log("master data = ", masterData);
     console.log("field key = ", masterData?.[field?.key]);
@@ -74,18 +73,6 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
         setOpenModule(openModule === moduleName ? null : moduleName);
     };
 
-    const handleSpecialFilter = (name, id) => {
-        console.log("name = ", name);
-        console.log("id = ", id);
-        if (field?.key === "manufacturer")
-            dispatch(setManu({ id: id, name: name }));
-        else if (field?.key === "b2c-template") {
-            dispatch(setB2CFinal({ id: id, name: name }));
-            dispatch(setSelectedB2C(name));
-        }
-        setOpenModule(null);
-    }
-
     const handleMultiSelect = (e, molecule) => {
         e.preventDefault();
         e.stopPropagation();
@@ -109,33 +96,39 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
     switch (field.fieldType) {
         case "input":
             return (
-                <input
-                    className={styles.input}
-                    type={field.inputType}
-                    value={getNestedValue(productDetails, field?.valueMap) || ""}
-                    onChange={(e) => handleChange(e, field)}
-                    disabled={`${field?.disabled === true ? true : ""}`}
-                    placeholder={`${field?.placeholder ? field.placeholder : ""}`}
-                    required={`${field?.required === true ? true : ""}`}
-                    min={field?.min ? field?.min : 0}
-                />
+                <>
+                    <input
+                        className={`${styles.input} ${error ? styles.errorInput : ""}`}
+                        type={field.inputType}
+                        value={getNestedValue(productDetails, field?.valueMap) || ""}
+                        onChange={(e) => handleChange(e, field)}
+                        disabled={`${field?.disabled === true ? true : ""}`}
+                        placeholder={`${field?.placeholder ? field.placeholder : ""}`}
+                        required={`${field?.required === true ? true : ""}`}
+                        min={field?.min ? field?.min : 0}
+                    />
+                    {error && <span className={styles.errorTooltip} title={error}>⚠</span>}
+                </>
             )
         case "dropdown":
             return (
-                <select
-                    className={styles.select}
-                    disabled={`${field?.disabled === true ? true : ""}`}
-                    required={`${field?.required === true ? true : ""}`}
-                    value={getNestedValue(productDetails, field?.valueMap) || ""}
-                    onChange={(e) => handleChange(e, field)}
-                >
-                    {!(field?.default) && <option></option>}
-                    {
-                        (masterData[field?.key] ? masterData[field?.key] : field?.options)?.map((item, ind) => (
-                            <option key={ind} value={`${field?.values ? field?.values[ind] : item}`}>{`${field?.options ? field?.options[ind] : item}`}</option>
-                        ))
-                    }
-                </select>
+                <>
+                    <select
+                        className={`${styles.select} ${error ? styles.errorInput : ""}`}
+                        disabled={`${field?.disabled === true ? true : ""}`}
+                        required={`${field?.required === true ? true : ""}`}
+                        value={getNestedValue(productDetails, field?.valueMap) || ""}
+                        onChange={(e) => handleChange(e, field)}
+                    >
+                        {!(field?.default) && <option></option>}
+                        {
+                            (masterData[field?.key] ? masterData[field?.key] : field?.options)?.map((item, ind) => (
+                                <option key={ind} value={`${field?.values ? field?.values[ind] : item}`}>{`${field?.options ? field?.options[ind] : item}`}</option>
+                            ))
+                        }
+                    </select>
+                    {error && <span className={styles.errorTooltip} title={error}>⚠</span>}
+                </>
             )
         case "search":
             return (
@@ -172,7 +165,10 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                                     (field?.key === "manufacturer" ? manufacturer?.values : b2c?.values)?.map((value, key) => (
                                         <button key={key}
                                             className={`${styles.dropdownItem2}`}
-                                            onClick={() => handleSpecialFilter(value[field?.valueName], value.id)}
+                                            onClick={() => {
+                                                handleSpecialFilter(field, value[field?.valueName], value.id);
+                                                setOpenModule(null);
+                                            }}
                                         >
                                             {value[field?.valueName]}
                                         </button>
@@ -181,6 +177,7 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                             </div>
                         )
                         }
+                        {error && <span className={styles.errorTooltip} title={error}>⚠</span>}
                     </div>
                 </>
             )
@@ -227,6 +224,7 @@ export const CommonForm = ({ field, masterData, handleChange, productDetails, ha
                                 ))}
                             </div>
                         )}
+                        {error && <span className={styles.errorTooltip} title={error}>⚠</span>}
                     </div>
                 </div>
             )

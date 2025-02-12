@@ -131,7 +131,7 @@ export const productMasterData = {
                     {
                         key: "",
                         display: "Banned*",
-                        required: true, 
+                        // required: true, 
                         fieldType: "dropdown",
                         options: ["Yes", "No"],
                         values: [true, false],
