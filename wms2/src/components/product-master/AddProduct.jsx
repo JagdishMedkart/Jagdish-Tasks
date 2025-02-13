@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "@/styles/Dashboard.module.scss";
 import { CommonForm } from "./CommonForm";
 import { setProductDetails, updateData2 } from "@/features/productDetails/productDetailSlice";
@@ -11,6 +11,7 @@ import apiClient from "@/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { setB2CFinal, setManu } from "@/features/productDetails/productDetailSlice";
+import { addMolecule, removeMolecule } from "@/features/productDetails/productDetailSlice";
 
 export const AddProduct = ({ masterData, productMasterData, value, productDetails, title, token }) => {
     console.log("master data = ", masterData);
@@ -18,6 +19,16 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
     const dispatch = useDispatch();
     const router = useRouter();
     const [errors, setErrors] = useState({});
+    const selectedMolecules = useSelector((state) => state.productDetail?.combination?.molecules || []);
+
+    const isEmptyValue = (value) => {
+        return (
+            value === undefined ||
+            value === "" ||
+            (Array.isArray(value) && value.length === 0) ||
+            (typeof value === "object" && value !== null && Object.keys(value).length === 0)
+        );
+    };
 
     const validateFields = () => {
         let newErrors = {};
@@ -25,7 +36,7 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
         productMasterData[productDetails?.product_type]?.mainForm?.forEach((field) => {
             const value = field.valueMap.split('.').reduce((acc, key) => acc?.[key], productDetails);
             console.warn("value for ", field?.valueMap, " is ", value);
-            if (field?.required && (!value || value === "")) {
+            if (field?.required && isEmptyValue(value)) {
                 newErrors[field.valueMap] = `${field.display} is required`;
             }
         });
@@ -34,7 +45,7 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
             header.fields.forEach((field) => {
                 const value = field.valueMap.split('.').reduce((acc, key) => acc?.[key], productDetails);
                 console.warn("value for ", field?.valueMap, " is ", value);
-                if (field.required && (!value || value === "")) {
+                if (field.required && isEmptyValue(value)) {
                     newErrors[field.valueMap] = `${field.display} is required`;
                 }
             });
@@ -76,10 +87,29 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
         console.warn("errors now = ", errors);
     }
 
+    const handleMultiSelect = (e, molecule, field) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("you want to add molecule", molecule);
+        console.log("selected molecules = ", selectedMolecules);
+        if (!selectedMolecules.some(m => m.molecule_id === molecule.molecule_id)) {
+            dispatch(addMolecule(molecule));
+            setErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                if (!isEmptyValue(field?.valueMap)) {
+                    delete newErrors[field.valueMap];
+                }
+                return newErrors;
+            });
+        }
+    };
+
     const handleChange = (e, field) => {
         console.log("you clicked on change with this", e, field);
         let value = e.target.value;
-        value = value === "true" ? true : value === "false" ? false : value;
+        if (value === "true") value = true;
+        else if (value === "false") value = false;
+        console.warn("Setting value:", value);
         const keys = field?.valueMap?.split(".");
         console.warn("you are trying to change ", value);
         console.log("handling input change ", value, field);
@@ -89,11 +119,12 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
             dispatch(updateData2({ name: field.valueMap, value: value }));
         setErrors((prevErrors) => {
             const newErrors = { ...prevErrors };
-            if (value && value !== "") {
+            if (!isEmptyValue(value)) {
                 delete newErrors[field.valueMap];
             }
             return newErrors;
         });
+        // validateFields();
         console.warn("errors now = ", errors);
     }
 
@@ -160,6 +191,8 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
                 setTimeout(() => {
                     router.push("/products-master");
                 }, 1800);
+
+                dispatch(setSelectedB2C(""));
             }
             else {
                 toast.error(`Error ${resp.status}: ${resp.data.message}`, { duration: 2000 });
@@ -197,6 +230,7 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
                                         token={token}
                                         error={errors[field.valueMap]}
                                         handleSpecialFilter={handleSpecialFilter}
+                                        handleMultiSelect={handleMultiSelect}
                                     />
                                 </div>
                             );
@@ -220,7 +254,7 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
                         productMasterData?.[productDetails?.product_type]?.headers[productDetails?.selected]?.fields.map((field, key) => {
                             console.log("field key = ", masterData[field?.key]);
                             return (
-                                <div className={`${styles.field} ${errors[field.valueMap] ? styles.errorField : ""}`}>
+                                <div key={key} className={`${styles.field} ${errors[field.valueMap] ? styles.errorField : ""}`}>
                                     <div className={styles.labelDiv}>
                                         <label className={styles.label}>{field.display}</label>
                                     </div>
@@ -233,6 +267,7 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
                                         token={token}
                                         error={errors[field.valueMap]}
                                         handleSpecialFilter={handleSpecialFilter}
+                                        handleMultiSelect={handleMultiSelect}
                                     />
                                 </div>
                             );

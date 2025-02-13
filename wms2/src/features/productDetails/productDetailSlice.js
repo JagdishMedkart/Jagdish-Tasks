@@ -6,11 +6,11 @@ const initialState = {
     is_rx_required: true,
     is_chronic: true,
     is_refrigerated: false,
-    is_hidden_from_alternate_products: true,
+    // is_hidden_from_alternate_products: true,
     is_discontinued: false,
     is_active: true,
-    is_banned: false,
-    is_assured: true,
+    // is_banned: false,
+    // is_assured: true,
     manufacturer: {
         id: 0,
         name: ""
@@ -18,6 +18,11 @@ const initialState = {
     sales_category: { b2c_category: "" },
     combination: {
         molecules: []
+    },
+    transaction_units: {
+        sales_unit: 1,
+        purchase_unit: 1,
+        transfer_unit: 1
     }
 };
 
@@ -66,11 +71,11 @@ export const productDetailSliceReducer = createSlice({
                 is_rx_required: true,
                 is_chronic: true,
                 is_refrigerated: false,
-                is_hidden_from_alternate_products: true,
+                // is_hidden_from_alternate_products: true,
                 is_discontinued: false,
-                is_banned: false,
-                is_assured: true,
                 is_active: true,
+                // is_banned: false,
+                // is_assured: true,
                 manufacturer: {
                     id: 0,
                     name: ""
@@ -78,6 +83,11 @@ export const productDetailSliceReducer = createSlice({
                 sales_category: { b2c_category: "" },
                 combination: {
                     molecules: []
+                },
+                transaction_units: {
+                    sales_unit: 1,
+                    purchase_unit: 1,
+                    transfer_unit: 1
                 }
             }
         },
@@ -101,13 +111,13 @@ export const productDetailSliceReducer = createSlice({
         },
 
         // addMolecule: (state, action) => {
-            // const { id, name, ...rest } = action.payload;
+        // const { id, name, ...rest } = action.payload;
 
-            // const newMolecule = {
-            //     molecule_id: id,
-            //     molecule_name: name,
-            //     ...rest
-            // }
+        // const newMolecule = {
+        //     molecule_id: id,
+        //     molecule_name: name,
+        //     ...rest
+        // }
 
         //     if (!state.combination.molecules.some(m => m.molecule_id === newMolecule.molecule_id)) {
         //         state.combination.molecules.push(newMolecule);
@@ -138,7 +148,7 @@ export const productDetailSliceReducer = createSlice({
             }
             return state;
         },
-        
+
         removeMolecule: (state, action) => {
             return {
                 ...state,

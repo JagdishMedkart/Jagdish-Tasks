@@ -21,14 +21,15 @@ const Table = ({ productStructure, products, onClickAction }) => {
                         {
                             productStructure?.headers.map((header, key2) => {
                                 return (
-                                    <td key={`${ind}-${key2}-${product?.product_id}`} className={`${styles.td}`}>
+                                    <td key={`${ind}123-${key2}-${product?.product_id}`} className={`${styles.td}`}>
                                         {
                                             header?.actions ?
-                                                header?.actions?.map((action) => {
+                                                header?.actions?.map((action, actionIndex) => {
                                                     switch (action?.fieldType) {
                                                         case "button":
                                                             return (
                                                                 <button
+                                                                key={`btn-${product.product_id}-${actionIndex}`}
                                                                     onClick={() => { onClickAction(action, product) }}>
                                                                     {action?.component ?
                                                                         action.component()

@@ -17,7 +17,7 @@ function* getMolecules(action) {
         console.log("Response of getMolecules = ", response);
         let res = [];
         response?.data?.molecules?.map((molecule) => {
-            const {id, name, ...rest} = molecule;
+            const { id, name, ...rest } = molecule;
             const newObj = {
                 molecule_id: id,
                 molecule_name: name,
@@ -25,7 +25,7 @@ function* getMolecules(action) {
             };
             res.push(newObj);
         })
-        console.error("newly created objects = ", res);
+        // console.error("newly created objects = ", res);
         yield put(setMolecules(res));
     }
     catch (error) {
@@ -40,13 +40,15 @@ function* getB2C(action) {
         let search = "";
         let text = action.payload.text;
         search = text?.length > 0 ? `?search=${text},category_name` : "";
-        const response = yield call(apiClient.get, `/api/v1/master/b2c-template${search}&status=Active`, {
-            headers: {
-                Authorization: token
-            }
-        })
-        console.log("Response of getB2C = ", response);
-        yield put(setB2C(response.data.b2cPricing));
+        if (text?.length > 0) {
+            const response = yield call(apiClient.get, `/api/v1/master/b2c-template${search}&status=Active`, {
+                headers: {
+                    Authorization: token
+                }
+            })
+            console.log("Response of getB2C = ", response);
+            yield put(setB2C(response.data.b2cPricing));
+        }
     }
     catch (error) {
         console.error("Error fetching manufacturers", error);

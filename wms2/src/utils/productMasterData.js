@@ -43,6 +43,7 @@ export const productMasterData = {
                 fieldType: "search",
                 valueMap: "manufacturer.name",
                 valueName: "name",
+                default: "Ex. Pharma..."
             },
             {
                 key: "mrp",
@@ -131,7 +132,7 @@ export const productMasterData = {
                     {
                         key: "",
                         display: "Banned*",
-                        // required: true, 
+                        required: true, 
                         fieldType: "dropdown",
                         options: ["Yes", "No"],
                         values: [true, false],
@@ -147,7 +148,7 @@ export const productMasterData = {
                         valueMap: "is_active"
                     },
                     {
-                        key: "is_hidden_from_alternate_products",
+                        key: "",
                         display: "Is Hidden From Alternate*",
                         required: true, 
                         fieldType: "dropdown",
@@ -277,7 +278,7 @@ export const productMasterData = {
                         display: "B2C Product type*",
                         required: true, 
                         fieldType: "search",
-                        default: "B2C Product type*",
+                        default: "B2C Product type...",
                         valueMap: "sales_category.b2c_category",
                         valueName: "category_name"
                     },
