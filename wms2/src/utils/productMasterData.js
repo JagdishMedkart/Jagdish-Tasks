@@ -66,6 +66,12 @@ export const productMasterData = {
                         display: "Dosage Form*",
                         required: true, 
                         fieldType: "dropdown",
+                        valueMap2:{
+                            key:"packaging",
+                            field:{
+                                key:"doszzz"
+                            }
+                        },
                         valueMap: "packaging_units.dosage_form"
                     },
                     {
