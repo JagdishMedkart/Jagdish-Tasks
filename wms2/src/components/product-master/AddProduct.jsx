@@ -11,7 +11,7 @@ import apiClient from "@/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { setB2CFinal, setManu } from "@/features/productDetails/productDetailSlice";
-import { addMolecule, removeMolecule } from "@/features/productDetails/productDetailSlice";
+import { addMolecule } from "@/features/productDetails/productDetailSlice";
 
 export const AddProduct = ({ masterData, productMasterData, value, productDetails, title, token }) => {
     console.log("master data = ", masterData);
@@ -202,7 +202,6 @@ export const AddProduct = ({ masterData, productMasterData, value, productDetail
             toast.error(`Error ${error.response?.status}: ${error.response?.data?.message || error.message}`, { duration: 2000 });
         }
     };
-
 
     useEffect(() => {
 

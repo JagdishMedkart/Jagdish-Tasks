@@ -325,11 +325,11 @@ $clear-button-color: rgb(255, 50, 50);
 }
 
 .errorHeader {
-    color: red;
+    color: #ba0000;
 }
 
 .errorInput {
-    border: 1px solid red;
+    border: 1px solid #ba0000;
     background: #fff4f4;
     position: relative;
 }
@@ -340,7 +340,7 @@ $clear-button-color: rgb(255, 50, 50);
 }
 
 .errorTooltip {
-    color: red;
+    color: #ba0000;
     font-size: 14px;
     margin-left: 8px;
     cursor: pointer;
@@ -353,7 +353,7 @@ $clear-button-color: rgb(255, 50, 50);
     left: 50%;
     bottom: 25px;
     transform: translateX(-50%);
-    background-color: #dc3545;
+    background-color: #ba0000;
     color: white;
     padding: 5px;
     border-radius: 5px;

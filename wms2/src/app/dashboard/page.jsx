@@ -6,12 +6,10 @@ import Header from '@/components/Header';
 
 export default function page() {
     return (
-        <div className={styles.page}>
-            <main className={styles.main}>
+        <div className={styles.mainDiv}>
                 <Navbar />
                 <Header />
                 <Dashboard />
-            </main>
         </div>
     )
 }
