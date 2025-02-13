@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../styles/AddProduct.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { fetchB2C, fetchManu, setSelectedB2C } from "@/features/addProduct/addProductSlice";
+import { fetchB2C, fetchManu } from "@/features/addProduct/addProductSlice";
 import { addMolecule, removeMolecule } from "@/features/productDetails/productDetailSlice";
 
 export const CommonForm = ({ field, masterData, handleChange, productDetails, handleSearch, token, error, handleSpecialFilter }) => {
